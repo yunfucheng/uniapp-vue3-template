@@ -9,9 +9,23 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AgreePrivacy: typeof import('./../src/components/agree-privacy/index.vue')['default']
+    AnnouncementManagement: typeof import('./../src/components/announcement/AnnouncementManagement.vue')['default']
+    BannerSection: typeof import('./../src/components/home/BannerSection.vue')['default']
+    CalendarSection: typeof import('./../src/components/home/CalendarSection.vue')['default']
+    CustomNavbar: typeof import('./../src/components/CustomNavbar.vue')['default']
+    CustomTabbar: typeof import('./../src/components/CustomTabbar.vue')['default']
+    ItemListSection: typeof import('./../src/components/home/ItemListSection.vue')['default']
     LangSelect: typeof import('./../src/components/lang-select/index.vue')['default']
+    NotificationSection: typeof import('./../src/components/home/NotificationSection.vue')['default']
+    PhotoManagement: typeof import('./../src/components/photowall/PhotoManagement.vue')['default']
+    PhotoWallSection: typeof import('./../src/components/home/PhotoWallSection.vue')['default']
+    PurchaseDetail: typeof import('./../src/components/purchase/PurchaseDetail.vue')['default']
+    PurchaseManagement: typeof import('./../src/components/purchase/PurchaseManagement.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SaleDetail: typeof import('./../src/components/sale/SaleDetail.vue')['default']
+    SaleManagement: typeof import('./../src/components/sale/SaleManagement.vue')['default']
+    StoreList: typeof import('./../src/components/store/StoreList.vue')['default']
     ThemePicker: typeof import('./../src/components/theme-picker/index.vue')['default']
   }
 }

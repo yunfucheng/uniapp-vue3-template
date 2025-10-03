@@ -16,6 +16,16 @@ export default antfu(
     ],
   },
   {
+    // 👇 新增：声明全局变量
+    languageOptions: {
+      globals: {
+        uni: 'readonly', // uni-app 全局 API
+        // 如果你还用到其他 uni-app / 小程序全局变量，也可以加上：
+        // wx: 'readonly',
+        // getApp: 'readonly',
+        // getCurrentPages: 'readonly',
+      },
+    },
     rules: {
       // vue顶级标签的顺序
       'vue/block-order': ['error', {

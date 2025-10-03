@@ -31,5 +31,5 @@
     "types/**/*.d.ts",
     "types/**/*.ts"
   ],
-  "exclude": ["dist", "node_modules", "uni_modules"]
+  "exclude": ["dist", "node_modules", "uni_modules", "src/mock/**/*.js", "src/utils/**/*.js"]
 }

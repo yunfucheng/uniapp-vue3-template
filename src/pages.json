@@ -1,98 +1,128 @@
 {
   "easycom": {
-    "custom": {
-      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
-      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
-      "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue",
-      "^(?!z-paging-refresh|z-paging-load-more)z-paging(.*)": "z-paging/components/z-paging$1/z-paging$1.vue"
-    }
-  },
-  "pages": [
-    {
-      "path": "pages/tab/home/index",
-      "style": {
-        "navigationBarTitleText": "首页"
-      }
-    },
-    {
-      "path": "pages/tab/list/index",
-      "style": {
-        "navigationBarTitleText": "列表"
-      }
-    },
-    {
-      "path": "pages/tab/user/index",
-      "style": {
-        "navigationStyle": "custom"
-      },
-      "needLogin": true
-    }
-  ],
-  "subPackages": [
-    {
-      "root": "pages/common",
-      "pages": [
-        {
-          "path": "login/index",
-          "style": {
-            "navigationBarTitleText": "登录",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "webview/index",
-          "style": {
-            "navigationBarTitleText": "网页"
-          }
-        },
-        {
-          "path": "404/index",
-          "style": {
-            "navigationBarTitleText": "404",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "theme/index",
-          "style": {
-            "navigationBarTitleText": "主题设置"
-          }
+        "autoscan": true,
+        "custom": {
+            "^u-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+            "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue"
         }
-      ]
+    },
+  "pages": [
+      {
+          "path": "pages/index/index",
+          "style": {
+              "navigationBarTitleText": "首页",
+              "enablePullDownRefresh": false,
+              "navigationStyle": "custom"
+          }
+      },
+      {
+          "path": "pages/photowall/manage",
+          "style": {
+              "navigationBarTitleText": "照片管理",
+              "enablePullDownRefresh": false,
+              "navigationStyle": "custom"
+          }
+      },
+      {
+          "path": "pages/messages/messages",
+          "style": {
+              "navigationBarTitleText": "消息中心",
+              "enablePullDownRefresh": false,
+              "navigationStyle": "custom"
+          }
+      },
+        {
+            "path": "pages/profile/profile",
+            "style": {
+                "navigationBarTitleText": "个人中心",
+                "enablePullDownRefresh": false
+            }
+        },
+        {
+            "path": "pages/calendar/calendar",
+            "style": {
+                "navigationBarTitleText": "黄历详情",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/announcement/detail",
+            "style": {
+                "navigationBarTitleText": "公告详情",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/photowall/add",
+            "style": {
+                "navigationBarTitleText": "添加照片",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/announcement/add",
+            "style": {
+                "navigationBarTitleText": "添加公告",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/sale/sale",
+            "style": {
+                "navigationBarTitleText": "出售信息",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/sale/add",
+            "style": {
+                "navigationBarTitleText": "添加出售",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/sale/detail",
+            "style": {
+                "navigationBarTitleText": "出售详情",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/purchase/purchase",
+            "style": {
+                "navigationBarTitleText": "收购信息",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/purchase/add",
+            "style": {
+                "navigationBarTitleText": "添加收购",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/purchase/detail",
+            "style": {
+                "navigationBarTitleText": "收购详情",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "农村云",
+        "navigationBarBackgroundColor": "#F8F8F8",
+        "backgroundColor": "#F8F8F8"
     }
-  ],
-  "preloadRule": {
-    "pages/tab/home/index": {
-      "network": "all",
-      "packages": ["pages/common"]
-    }
-  },
-  "tabBar": {
-    "color": "#1b233b",
-    "selectedColor": "#21d59d",
-    "borderStyle": "black",
-    "backgroundColor": "#ffffff",
-    "list": [{
-      "iconPath": "static/images/tabbar/icon_home.png",
-      "selectedIconPath": "static/images/tabbar/icon_home_selected.png",
-      "pagePath": "pages/tab/home/index",
-      "text": "首页"
-    }, {
-      "iconPath": "static/images/tabbar/icon_list.png",
-      "selectedIconPath": "static/images/tabbar/icon_list_selected.png",
-      "pagePath": "pages/tab/list/index",
-      "text": "列表"
-    }, {
-      "iconPath": "static/images/tabbar/icon_me.png",
-      "selectedIconPath": "static/images/tabbar/icon_me_selected.png",
-      "pagePath": "pages/tab/user/index",
-      "text": "我的"
-    }]
-  },
-  "globalStyle": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8"
-  }
 }
