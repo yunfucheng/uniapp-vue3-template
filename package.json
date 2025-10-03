@@ -8,16 +8,9 @@
     "email": "oyjt001@gmail.com",
     "github": "https://github.com/oyjt"
   },
-  "license": "MIT",
-  "homepage": "https://github.com/oyjt/uniapp-vue3-template",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/oyjt/uniapp-vue3-template.git"
-  },
   "keywords": [
     "Vue3",
     "uniapp",
-    "uniapp-vue3-template",
     "Vite5",
     "TypeScript",
     "uview-plus",
