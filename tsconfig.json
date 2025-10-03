@@ -30,7 +30,8 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "types/**/*.d.ts",
-    "types/**/*.ts"
+    "types/**/*.ts",
+    "nui_modules/**/*.vue",
   ],
   "exclude": ["dist", "node_modules", "uni_modules", "src/mock/**/*.js", "src/utils/**/*.js"]
 }

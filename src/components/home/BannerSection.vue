@@ -41,23 +41,8 @@ export default {
   },
   methods: {
     onBannerTap(banner) {
-      // 使用uni-app的图片预览功能
-      uni.previewImage({
-        current: banner.imageUrl,
-        urls: this.banners.map(item => item.imageUrl),
-        indicator: 'number',
-        loop: true,
-        success: () => {
-          console.log('图片预览成功');
-        },
-        fail: (err) => {
-          console.error('图片预览失败:', err);
-          uni.showToast({
-            title: '图片加载失败',
-            icon: 'none',
-          });
-        },
-      });
+      // 跳转到家乡照片墙页面
+      uni.navigateTo({ url: '/pages/photowall/wall' });
     },
   },
 };

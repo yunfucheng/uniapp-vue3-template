@@ -16,6 +16,7 @@ declare module 'vue' {
     CustomTabbar: typeof import('./../src/components/CustomTabbar.vue')['default']
     ItemListSection: typeof import('./../src/components/home/ItemListSection.vue')['default']
     LangSelect: typeof import('./../src/components/lang-select/index.vue')['default']
+    LsjAlbum: typeof import('./../src/components/photowall/lsj-album.vue')['default']
     NotificationSection: typeof import('./../src/components/home/NotificationSection.vue')['default']
     PhotoManagement: typeof import('./../src/components/photowall/PhotoManagement.vue')['default']
     PhotoWallSection: typeof import('./../src/components/home/PhotoWallSection.vue')['default']

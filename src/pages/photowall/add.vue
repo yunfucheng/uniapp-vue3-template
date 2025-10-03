@@ -3,7 +3,7 @@
     <view>
       <u-navbar :auto-back="true" placeholder fixed>
         <template #right>
-          <u-button size="small" color="#09BE4F" shape="circle" @click="publish">
+          <u-button size="small" color="#09BE4F" shape="circle" >
             发布
           </u-button>
         </template>

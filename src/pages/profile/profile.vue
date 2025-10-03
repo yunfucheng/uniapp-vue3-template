@@ -1,19 +1,12 @@
 <template>
   <view class="profile-page flex flex-col px-4">
-    <!-- 顶部导航（仿微信：纯色/透明） -->
-    <up-navbar :auto-back="true" bg-color="#222222" :fixed="true" :placeholder="true" title="我的" title-color="#FFFFFF" left-icon-color="#FFFFFF" />
+
+    <up-navbar :placeholder="true" title="我的" />
 
     <!-- 个人信息块 -->
     <view class="card mt-2 flex items-center gap-3 p-3">
-      <up-image
-        class="avatar"
-        src="http://t2k8c3tkq.hn-bkt.clouddn.com/Avatar/avatar004.jpg"
-        mode="aspectFill"
-        width="72px"
-        height="72px"
-        shape="square"
-        radius="20px"
-      />
+      <up-image class="avatar" src="http://t2k8c3tkq.hn-bkt.clouddn.com/Avatar/avatar004.jpg" mode="aspectFill"
+        width="72px" height="72px" shape="square" radius="20px" />
       <view class="flex flex-1 flex-col">
         <view class="flex items-center gap-2">
           <up-text :text="nickname" size="18px" color="#111827" />
@@ -27,6 +20,20 @@
           <up-text text="乌翁屯" size="14px" color="#6b7280" />
         </view>
       </view>
+    </view>
+
+    <view class="flex box-border w-full" style=""
+      :style="{ 'url': '', 'position': 'static', 'flexDirection': 'row', 'justifyContent': 'center', 'alignItems': 'center', 'flex1': 'auto', 'width': '100%', 'height': '150rpx', 'padding': '0', 'margin': '0px 0px 10px 0px', 'color': '#333333', 'background': '#fffffffc', 'borderRadius': '0px', 'borderColor': '#ffffff', 'borderWidth': '0px', 'borderStyle': 'solid', 'top': '', 'bottom': '', 'left': '', 'right': '' }">
+      <up-cell-group class="" style="">
+        <up-cell class="" style="" title="管理乡村" :isLink="true">
+          <template v-slot:icon>
+            <up-icon class="mr-2" style="" name="server-man"
+              color="#03CE10FF" size="25px" labelPos="right" labelSize="15px" labelColor="#606266" space="3px"
+              imgMode="aspectFill" top="0">
+            </up-icon>
+          </template>
+        </up-cell>
+      </up-cell-group>
     </view>
 
     <!-- 功能列表 -->
@@ -61,12 +68,17 @@
         </template>
       </up-cell>
 
+    </up-cell-group>
+
+    <!-- 设置 -->
+    <up-cell-group class="mt-3">
       <up-cell title="设置" :is-link="true" @click="goSettings">
         <template #icon>
           <up-icon name="setting" color="#374151" size="22px" class="mr-2" />
         </template>
       </up-cell>
     </up-cell-group>
+
     <!-- 全局底部 Tabbar -->
     <CustomTabbar />
   </view>
