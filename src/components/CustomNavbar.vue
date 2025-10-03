@@ -2,7 +2,7 @@
   <view class="custom-navbar-container">
     <view>
       <view>
-        <u-navbar :title="title" placeholder fixed>
+        <u-navbar :title="title" placeholder>
           <template #left>
             <view>
               <view class="village-selector" @click="onVillageSelect">
@@ -187,13 +187,6 @@ export default {
 
 .status-bar {
   background-color: #ffffff;
-}
-
-.user-avatar-navbar {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: 50%;
-  border: 2rpx solid #e5e7eb;
 }
 
 .function-nav {
