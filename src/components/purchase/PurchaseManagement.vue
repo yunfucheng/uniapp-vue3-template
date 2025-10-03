@@ -5,28 +5,38 @@
       <view v-for="item in items" :key="item.id" class="item-card" @tap="onView(item)">
         <view class="item-main">
           <view class="item-content" :class="{ 'no-image': !item.image }">
-            <text class="item-title">{{ item.title }}</text>
+            <text class="item-title">
+              {{ item.title }}
+            </text>
             <view class="item-price">
-              <text class="purchase">每斤{{ item.price }}元</text>
+              <text class="purchase">
+                每斤{{ item.price }}元
+              </text>
             </view>
             <view class="item-user-info">
               <image class="user-avatar" :src="item.userAvatar" mode="aspectFill" />
-              <text class="user-nickname">{{ item.userNickname }}</text>
+              <text class="user-nickname">
+                {{ item.userNickname }}
+              </text>
             </view>
           </view>
           <image v-if="item.image" class="item-image" :src="item.image" mode="aspectFill" />
         </view>
 
         <view class="item-meta-row">
-          <text class="item-location">{{ item.location }}</text>
-          <text class="item-time">{{ item.time }}</text>
+          <text class="item-location">
+            {{ item.location }}
+          </text>
+          <text class="item-time">
+            {{ item.time }}
+          </text>
         </view>
       </view>
     </view>
 
     <!-- 发布按钮 -->
     <view>
-      <up-float-button :isMenu="false" bottom="0px" backgroundColor="#09BE4F" @click="onAdd" />
+      <up-float-button :is-menu="false" bottom="0px" background-color="#09BE4F" @click="onAdd" />
     </view>
   </view>
 </template>
@@ -37,19 +47,19 @@ export default {
   props: {
     items: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
-  emits: ['add-item', 'view-item'],
+  emits: ['addItem', 'viewItem'],
   methods: {
     onAdd() {
-      this.$emit('add-item')
+      this.$emit('addItem');
     },
     onView(item) {
-      this.$emit('view-item', item)
-    }
-  }
-}
+      this.$emit('viewItem', item);
+    },
+  },
+};
 </script>
 
 <style scoped>

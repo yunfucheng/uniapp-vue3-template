@@ -1,9 +1,11 @@
 <template>
   <view class="add-photo-page">
     <view>
-      <u-navbar :autoBack="true" fixed placeholder>
+      <u-navbar :auto-back="true" placeholder fixed>
         <template #right>
-          <u-button size="small" color="#09BE4F" shape="circle" @click="publish">发布</u-button>
+          <u-button size="small" color="#09BE4F" shape="circle" @click="publish">
+            发布
+          </u-button>
         </template>
       </u-navbar>
     </view>
@@ -13,26 +15,28 @@
       <view>
         <!-- 文本内容：与添加公告风格一致，去分区标题，仅保留输入框与细线 -->
         <view>
-          <u-input placeholder="描述照片" border="bottom" ></u-input>
+          <u-input placeholder="描述照片" border="bottom" />
           <u-divider />
         </view>
 
         <!-- 多图片上传：不使用卡片容器，仅保留组件与细线 -->
         <view class="section">
           <u-upload
-            v-model:fileList="fileList"
+            v-model:file-list="fileList"
             accept="image"
-            :maxCount="9"
-            :autoUpload="false"
+            :max-count="9"
+            :auto-upload="false"
             multiple
-            :previewFullImage="true"
-            @afterRead="onAfterRead"
+            :preview-full-image="true"
+            list-type="picture"
+            @after-read="onAfterRead"
             @delete="onDelete"
-            listType="picture"
           />
-          <view class="divider"></view>
+          <view class="divider" />
         </view>
-        <view class="hint">最多选择 9 张图片，支持预览大图</view>
+        <view class="hint">
+          最多选择 9 张图片，支持预览大图
+        </view>
       </view>
     </scroll-view>
   </view>
@@ -44,45 +48,45 @@ export default {
   data() {
     return {
       fileList: [],
-      contentText: ''
-    }
+      contentText: '',
+    };
   },
   methods: {
     goBack() {
-      uni.navigateBack()
+      uni.navigateBack();
     },
     onAfterRead(event) {
-      const files = Array.isArray(event.file) ? event.file : [event.file]
+      const files = Array.isArray(event.file) ? event.file : [event.file];
       const mapped = files.map(f => ({
         url: f.url || f.path || '',
         name: f.name || 'image',
         ext: f.ext || '',
-        size: f.size || 0
-      })).filter(f => f.url)
-      this.fileList = this.fileList.concat(mapped)
+        size: f.size || 0,
+      })).filter(f => f.url);
+      this.fileList = this.fileList.concat(mapped);
     },
     onDelete(event) {
-      const index = event.index
+      const index = event.index;
       if (index >= 0 && index < this.fileList.length) {
-        this.fileList.splice(index, 1)
+        this.fileList.splice(index, 1);
       }
     },
     async publish() {
       if (!this.fileList.length) {
-        uni.showToast({ title: '请先选择图片', icon: 'none' })
-        return
+        uni.showToast({ title: '请先选择图片', icon: 'none' });
+        return;
       }
       // 此处可对接上传接口；当前仅作提交成功提示
-      uni.showLoading({ title: '正在发表...' })
+      uni.showLoading({ title: '正在发表...' });
       setTimeout(() => {
-        uni.hideLoading()
-        uni.showToast({ title: '已发表', icon: 'success' })
+        uni.hideLoading();
+        uni.showToast({ title: '已发表', icon: 'success' });
         // 返回上一页或首页
-        setTimeout(() => uni.navigateBack(), 600)
-      }, 800)
-    }
-  }
-}
+        setTimeout(() => uni.navigateBack(), 600);
+      }, 800);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -105,7 +109,6 @@ export default {
 }
 
 .form-content { padding: 24rpx; }
-
 
 .hint {
   margin-top: 16rpx;

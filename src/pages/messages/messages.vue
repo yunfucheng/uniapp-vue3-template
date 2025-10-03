@@ -1,15 +1,14 @@
 <template>
-  <view class="messages-page bg-gray-50 min-h-full pb-16">
+  <view class="messages-page min-h-full bg-gray-50 pb-16">
     <!-- 顶部自定义导航栏 -->
-     <view>
-      <u-navbar title="消息中心" fixed placeholder>
-        <template #left>
-        </template>
+    <view>
+      <u-navbar title="消息中心" placeholder fixed>
+        <template #left />
         <template #right>
           <u-icon name="trash" size="20" color="#64748b" />
         </template>
-      </u-navbar>      
-     </view>
+      </u-navbar>
+    </view>
 
     <!-- 消息列表 -->
     <view class="px-3 py-3">
@@ -19,13 +18,19 @@
           <up-image :src="item.avatar" mode="aspectFill" width="44px" height="44px" shape="circle" />
 
           <!-- 右侧内容：昵称 | 时间（靠右） + 消息正文 + 行分隔线（不占头像区域） -->
-          <view class="flex-1 ml-3">
+          <view class="ml-3 flex-1">
             <view class="flex items-center justify-between">
-              <text class="text-base font-600 text-gray-800">{{ item.nickname }}</text>
-              <text class="text-xs text-gray-400">{{ item.date }}</text>
+              <text class="text-base text-gray-800 font-600">
+                {{ item.nickname }}
+              </text>
+              <text class="text-xs text-gray-400">
+                {{ item.date }}
+              </text>
             </view>
-            <text class="mt-1 block text-sm text-gray-700">{{ item.content }}</text>
-            <view v-if="idx !== messages.length - 1" class="row-sep"></view>
+            <text class="mt-1 block text-sm text-gray-700">
+              {{ item.content }}
+            </text>
+            <view v-if="idx !== messages.length - 1" class="row-sep" />
           </view>
         </view>
       </view>
@@ -34,15 +39,14 @@
     <!-- 底部 Tabbar -->
     <CustomTabbar />
   </view>
-
 </template>
 
 <script>
-import CustomTabbar from '@/components/CustomTabbar.vue'
+import CustomTabbar from '@/components/CustomTabbar.vue';
 
 export default {
   components: {
-    CustomTabbar
+    CustomTabbar,
   },
   data() {
     return {
@@ -52,40 +56,40 @@ export default {
           avatar: 'http://t2k8c3tkq.hn-bkt.clouddn.com/Avatar/avatar005.jpg',
           nickname: '幸福一生',
           date: '9月23日',
-          content: '你干嘛?'
+          content: '你干嘛?',
         },
         {
           id: 2,
           avatar: 'http://t2k8c3tkq.hn-bkt.clouddn.com/Avatar/avatar006.jpg',
           nickname: '爱江山更爱美人',
           date: '8月20日',
-          content: '不要这样子'
+          content: '不要这样子',
         },
         {
           id: 3,
           avatar: 'http://t2k8c3tkq.hn-bkt.clouddn.com/Avatar/avatar007.jpg',
           nickname: 'Aser0327',
           date: '2025年8月1日',
-          content: '感觉你的好意！'
+          content: '感觉你的好意！',
         },
         {
           id: 4,
           avatar: 'http://t2k8c3tkq.hn-bkt.clouddn.com/Avatar/avatar008.jpg',
           nickname: '俗了月.',
           date: '2025年3月12日',
-          content: '好像是这样子吧'
+          content: '好像是这样子吧',
         },
         {
           id: 5,
           avatar: 'http://t2k8c3tkq.hn-bkt.clouddn.com/Avatar/avatar009.jpg',
           nickname: '🌸豌豆糕🎀',
           date: '2025年2月12日',
-          content: '不要。'
-        }
-      ]
-    }
-  }
-}
+          content: '不要。',
+        },
+      ],
+    };
+  },
+};
 </script>
 
 <style scoped>

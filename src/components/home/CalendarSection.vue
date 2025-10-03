@@ -2,12 +2,20 @@
   <view class="calendar-section" @tap="showCalendar">
     <view class="calendar-content">
       <view class="calendar-left">
-        <text class="calendar-title">今日黄历</text>
-        <text class="calendar-date">农历 {{ calendarData.lunarCalendar || '七月十二' }} · {{ calendarData.yearTips || '乙巳' }}年</text>
+        <text class="calendar-title">
+          今日黄历
+        </text>
+        <text class="calendar-date">
+          农历 {{ calendarData.lunarCalendar || '七月十二' }} · {{ calendarData.yearTips || '乙巳' }}年
+        </text>
       </view>
       <view class="calendar-right">
-        <text class="calendar-good">宜：{{ getSuitText() }}</text>
-        <text class="calendar-bad">忌：{{ getAvoidText() }}</text>
+        <text class="calendar-good">
+          宜：{{ getSuitText() }}
+        </text>
+        <text class="calendar-bad">
+          忌：{{ getAvoidText() }}
+        </text>
       </view>
     </view>
   </view>
@@ -19,36 +27,36 @@ export default {
   props: {
     calendarData: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   methods: {
     showCalendar() {
       // 跳转到黄历详情页面
       uni.navigateTo({
-        url: '/pages/calendar/calendar'
-      })
+        url: '/pages/calendar/calendar',
+      });
     },
-    
+
     // 获取宜事项文本
     getSuitText() {
       if (this.calendarData.suit) {
-        const items = this.calendarData.suit.split('.')
-        return items.slice(0, 3).join(' ')
+        const items = this.calendarData.suit.split('.');
+        return items.slice(0, 3).join(' ');
       }
-      return '祭祀 理发 作灶'
+      return '祭祀 理发 作灶';
     },
-    
+
     // 获取忌事项文本
     getAvoidText() {
       if (this.calendarData.avoid) {
-        const items = this.calendarData.avoid.split('.')
-        return items.slice(0, 3).join(' ')
+        const items = this.calendarData.avoid.split('.');
+        return items.slice(0, 3).join(' ');
       }
-      return '嫁娶 栽种 祈福'
-    }
-  }
-}
+      return '嫁娶 栽种 祈福';
+    },
+  },
+};
 </script>
 
 <style scoped>

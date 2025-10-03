@@ -4,10 +4,12 @@
     <view class="custom-navbar">
       <view class="navbar-content">
         <view class="navbar-left" @tap="goBack">
-          <u-icon name="arrow-left" size="20" color="#1f2937"></u-icon>
+          <u-icon name="arrow-left" size="20" color="#1f2937" />
         </view>
         <view class="navbar-title">
-          <text class="title-text">公告详情</text>
+          <text class="title-text">
+            公告详情
+          </text>
         </view>
         <view class="navbar-right">
           <!-- 占位，保持居中 -->
@@ -20,7 +22,9 @@
       <view class="detail-content">
         <!-- 标题区域 -->
         <view class="title-section">
-          <text class="announcement-title">{{ announcementData.title }}</text>
+          <text class="announcement-title">
+            {{ announcementData.title }}
+          </text>
         </view>
 
         <!-- 信息栏 -->
@@ -28,47 +32,55 @@
           <view class="info-row">
             <!-- 公告类型图标 -->
             <view class="type-badge" :class="announcementData.type === 0 ? 'notification-badge' : 'announcement-badge'">
-              <u-icon 
-                :name="announcementData.type === 0 ? 'bell' : 'volume'" 
-                size="14" 
-                :color="announcementData.type === 0 ? '#dc2626' : '#22c55e'">
-              </u-icon>
-              <text class="badge-text">{{ announcementData.type === 0 ? '通知' : '公告' }}</text>
+              <u-icon
+                :name="announcementData.type === 0 ? 'bell' : 'volume'"
+                size="14"
+                :color="announcementData.type === 0 ? '#dc2626' : '#22c55e'"
+              />
+              <text class="badge-text">
+                {{ announcementData.type === 0 ? '通知' : '公告' }}
+              </text>
             </view>
 
             <!-- 级别图标 -->
-            <view class="level-badge" :style="{ backgroundColor: getLevelColor(announcementData.adminLevel) + '15' }">
+            <view class="level-badge" :style="{ backgroundColor: `${getLevelColor(announcementData.adminLevel)}15` }">
               <text class="level-text" :style="{ color: getLevelColor(announcementData.adminLevel) }">
                 {{ getLevelText(announcementData.adminLevel) }}
               </text>
             </view>
 
             <!-- 时间 -->
-            <text class="publish-time">{{ announcementData.createTimeFomat }}</text>
+            <text class="publish-time">
+              {{ announcementData.createTimeFomat }}
+            </text>
           </view>
         </view>
 
         <!-- 分割线 -->
-        <view class="divider"></view>
+        <view class="divider" />
 
         <!-- 语音播放区域 -->
-        <view class="audio-section" v-if="announcementData.audioUrl">
+        <view v-if="announcementData.audioUrl" class="audio-section">
           <view class="audio-player">
             <view class="audio-controls">
-              <view class="play-button" @tap="toggleAudio" :class="{ playing: isPlaying }">
-                <u-icon 
-                  :name="isPlaying ? 'pause' : 'play-right'" 
-                  size="24" 
-                  color="#ffffff">
-                </u-icon>
+              <view class="play-button" :class="{ playing: isPlaying }" @tap="toggleAudio">
+                <u-icon
+                  :name="isPlaying ? 'pause' : 'play-right'"
+                  size="24"
+                  color="#ffffff"
+                />
               </view>
               <view class="audio-info">
-                <text class="audio-label">语音播报</text>
+                <text class="audio-label">
+                  语音播报
+                </text>
                 <view class="progress-container">
                   <view class="progress-bar">
-                    <view class="progress-fill" :style="{ width: progressPercent + '%' }"></view>
+                    <view class="progress-fill" :style="{ width: `${progressPercent}%` }" />
                   </view>
-                  <text class="time-text">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</text>
+                  <text class="time-text">
+                    {{ formatTime(currentTime) }} / {{ formatTime(duration) }}
+                  </text>
                 </view>
               </view>
             </view>
@@ -76,27 +88,30 @@
         </view>
 
         <!-- 分割线 -->
-        <view class="divider" v-if="announcementData.audioUrl"></view>
+        <view v-if="announcementData.audioUrl" class="divider" />
 
         <!-- 内容区域 -->
         <view class="content-section">
-          <text class="content-text">{{ announcementData.text }}</text>
+          <text class="content-text">
+            {{ announcementData.text }}
+          </text>
         </view>
 
         <!-- 图片区域 -->
-        <view class="images-section" v-if="announcementData.images && announcementData.images.length > 0">
+        <view v-if="announcementData.images && announcementData.images.length > 0" class="images-section">
           <view class="image-grid">
-            <view 
-              v-for="(image, index) in announcementData.images" 
-              :key="index" 
+            <view
+              v-for="(image, index) in announcementData.images"
+              :key="index"
               class="image-item"
-              @tap="previewImage(index)">
-              <image 
-                :src="image" 
-                mode="aspectFill" 
+              @tap="previewImage(index)"
+            >
+              <image
+                :src="image"
+                mode="aspectFill"
                 class="content-image"
-                :lazy-load="true">
-              </image>
+                :lazy-load="true"
+              />
             </view>
           </view>
         </view>
@@ -126,20 +141,20 @@ export default {
         audioUrl: 'https://res.gsmba.net/ETraining/Files/Audio/8e08930b-6b5b-4a8e-bf86-47decd39c967.mp3',
         images: [
           'http://t2k8c3tkq.hn-bkt.clouddn.com/Banner/ww01.jpg',
-          'http://t2k8c3tkq.hn-bkt.clouddn.com/Banner/ww02.jpg'
-        ]
-      }
-    }
+          'http://t2k8c3tkq.hn-bkt.clouddn.com/Banner/ww02.jpg',
+        ],
+      },
+    };
   },
   computed: {
     progressPercent() {
-      if (this.duration === 0) return 0
-      return (this.currentTime / this.duration) * 100
-    }
+      if (this.duration === 0) return 0;
+      return (this.currentTime / this.duration) * 100;
+    },
   },
   onLoad(options) {
     if (options.id) {
-      this.announcementId = options.id
+      this.announcementId = options.id;
       // TODO: 根据ID获取公告详情数据
       // this.loadAnnouncementDetail(options.id)
     }
@@ -147,24 +162,24 @@ export default {
   onUnload() {
     // 页面卸载时停止音频播放
     if (this.audioContext) {
-      this.audioContext.stop()
-      this.audioContext.destroy()
+      this.audioContext.stop();
+      this.audioContext.destroy();
     }
   },
   methods: {
     // 返回上一页
     goBack() {
-      uni.navigateBack()
+      uni.navigateBack();
     },
 
     // 获取管理级别文本
     getLevelText(adminLevel) {
       const levelMap = {
         0: '屯',
-        1: '村', 
-        2: '乡'
-      }
-      return levelMap[adminLevel] || '村'
+        1: '村',
+        2: '乡',
+      };
+      return levelMap[adminLevel] || '村';
     },
 
     // 获取管理级别颜色
@@ -172,87 +187,88 @@ export default {
       const colorMap = {
         0: '#F59E0B', // 屯 - 黄色
         1: '#DC2626', // 村 - 红色
-        2: '#3B82F6'  // 乡 - 蓝色
-      }
-      return colorMap[adminLevel] || '#DC2626'
+        2: '#3B82F6', // 乡 - 蓝色
+      };
+      return colorMap[adminLevel] || '#DC2626';
     },
 
     // 切换音频播放状态
     toggleAudio() {
-      if (!this.announcementData.audioUrl) return
+      if (!this.announcementData.audioUrl) return;
 
       if (this.isPlaying) {
-        this.pauseAudio()
-      } else {
-        this.playAudio()
+        this.pauseAudio();
+      }
+      else {
+        this.playAudio();
       }
     },
 
     // 播放音频
     playAudio() {
       if (!this.audioContext) {
-        this.audioContext = uni.createInnerAudioContext()
-        this.audioContext.src = this.announcementData.audioUrl
-        
+        this.audioContext = uni.createInnerAudioContext();
+        this.audioContext.src = this.announcementData.audioUrl;
+
         this.audioContext.onPlay(() => {
-          this.isPlaying = true
-        })
-        
+          this.isPlaying = true;
+        });
+
         this.audioContext.onPause(() => {
-          this.isPlaying = false
-        })
-        
+          this.isPlaying = false;
+        });
+
         this.audioContext.onStop(() => {
-          this.isPlaying = false
-          this.currentTime = 0
-        })
-        
+          this.isPlaying = false;
+          this.currentTime = 0;
+        });
+
         this.audioContext.onEnded(() => {
-          this.isPlaying = false
-          this.currentTime = 0
-        })
-        
+          this.isPlaying = false;
+          this.currentTime = 0;
+        });
+
         this.audioContext.onTimeUpdate(() => {
-          this.currentTime = this.audioContext.currentTime
-          this.duration = this.audioContext.duration
-        })
-        
+          this.currentTime = this.audioContext.currentTime;
+          this.duration = this.audioContext.duration;
+        });
+
         this.audioContext.onError((error) => {
-          console.error('音频播放错误:', error)
+          console.error('音频播放错误:', error);
           uni.showToast({
             title: '音频播放失败',
-            icon: 'none'
-          })
-        })
+            icon: 'none',
+          });
+        });
       }
-      
-      this.audioContext.play()
+
+      this.audioContext.play();
     },
 
     // 暂停音频
     pauseAudio() {
       if (this.audioContext) {
-        this.audioContext.pause()
+        this.audioContext.pause();
       }
     },
 
     // 格式化时间
     formatTime(seconds) {
-      if (!seconds || isNaN(seconds)) return '00:00'
-      const mins = Math.floor(seconds / 60)
-      const secs = Math.floor(seconds % 60)
-      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+      if (!seconds || Number.isNaN(seconds)) return '00:00';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     },
 
     // 预览图片
     previewImage(index) {
       uni.previewImage({
         urls: this.announcementData.images,
-        current: index
-      })
-    }
-  }
-}
+        current: index,
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>

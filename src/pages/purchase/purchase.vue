@@ -4,12 +4,14 @@
     <view class="custom-navbar">
       <view class="navbar-content">
         <view class="navbar-left" @tap="goBack">
-          <u-icon name="arrow-left" size="20" color="#1f2937"></u-icon>
+          <u-icon name="arrow-left" size="20" color="#1f2937" />
         </view>
         <view class="navbar-title">
-          <text class="title-text">收购信息</text>
+          <text class="title-text">
+            收购信息
+          </text>
         </view>
-        <view class="navbar-right"></view>
+        <view class="navbar-right" />
       </view>
     </view>
 
@@ -22,28 +24,28 @@
 </template>
 
 <script>
-import PurchaseManagement from '@/components/purchase/PurchaseManagement.vue'
-import DataManager from '@/utils/dataManager.js'
+import PurchaseManagement from '@/components/purchase/PurchaseManagement.vue';
+import DataManager from '@/utils/dataManager.js';
 
 export default {
   name: 'PurchasePage',
   components: { PurchaseManagement },
   data() {
     return {
-      items: DataManager.getDefaultPurchaseItems()
-    }
+      items: DataManager.getDefaultPurchaseItems(),
+    };
   },
   methods: {
-    goBack() { uni.navigateBack() },
+    goBack() { uni.navigateBack(); },
     addItem() {
-      uni.navigateTo({ url: '/pages/purchase/add' })
+      uni.navigateTo({ url: '/pages/purchase/add' });
     },
     viewItem(item) {
-      const id = item?.id || 1
-      uni.navigateTo({ url: `/pages/purchase/detail?id=${id}` })
-    }
-  }
-}
+      const id = item?.id || 1;
+      uni.navigateTo({ url: `/pages/purchase/detail?id=${id}` });
+    },
+  },
+};
 </script>
 
 <style scoped>

@@ -4,12 +4,14 @@
     <view class="custom-navbar">
       <view class="navbar-content">
         <view class="navbar-left" @tap="goBack">
-          <u-icon name="arrow-left" size="20" color="#1f2937"></u-icon>
+          <u-icon name="arrow-left" size="20" color="#1f2937" />
         </view>
         <view class="navbar-title">
-          <text class="title-text">出售信息</text>
+          <text class="title-text">
+            出售信息
+          </text>
         </view>
-        <view class="navbar-right"></view>
+        <view class="navbar-right" />
       </view>
     </view>
 
@@ -22,28 +24,28 @@
 </template>
 
 <script>
-import SaleManagement from '@/components/sale/SaleManagement.vue'
-import DataManager from '@/utils/dataManager.js'
+import SaleManagement from '@/components/sale/SaleManagement.vue';
+import DataManager from '@/utils/dataManager.js';
 
 export default {
   name: 'SalePage',
   components: { SaleManagement },
   data() {
     return {
-      items: DataManager.getDefaultSaleItems()
-    }
+      items: DataManager.getDefaultSaleItems(),
+    };
   },
   methods: {
-    goBack() { uni.navigateBack() },
+    goBack() { uni.navigateBack(); },
     addItem() {
-      uni.navigateTo({ url: '/pages/sale/add' })
+      uni.navigateTo({ url: '/pages/sale/add' });
     },
     viewItem(item) {
-      const id = item?.id || 1
-      uni.navigateTo({ url: `/pages/sale/detail?id=${id}` })
-    }
-  }
-}
+      const id = item?.id || 1;
+      uni.navigateTo({ url: `/pages/sale/detail?id=${id}` });
+    },
+  },
+};
 </script>
 
 <style scoped>

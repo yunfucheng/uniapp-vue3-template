@@ -1,28 +1,39 @@
 <template>
   <view class="home-section">
     <view class="section-header">
-      <text class="home-section-title">照片墙</text>
-      <text class="more-link" @tap="goToPhotoWall">更多</text>
+      <text class="home-section-title">
+        照片墙
+      </text>
+      <text class="more-link" @tap="goToPhotoWall">
+        更多
+      </text>
     </view>
-    
+
     <view class="photo-wall-section">
-      <scroll-view 
-        scroll-x="true" 
+      <scroll-view
+        scroll-x="true"
         class="photo-wall-scroll"
         :show-scrollbar="false"
         :enable-back-to-top="false"
-        :scroll-with-animation="true">
+        :scroll-with-animation="true"
+      >
         <view class="photo-wall-content">
-          <view v-for="photo in photoWallItems" :key="photo.id" 
-                class="photo-wall-item" 
-                @tap="onPhotoTap(photo)">
+          <view
+            v-for="photo in photoWallItems" :key="photo.id"
+            class="photo-wall-item"
+            @tap="onPhotoTap(photo)"
+          >
             <image class="photo-wall-bg" :src="photo.imageUrl" mode="aspectFill" />
             <view class="photo-wall-overlay">
               <view class="photo-wall-user-info">
                 <image class="photo-wall-avatar" :src="photo.userAvatar" mode="aspectFill" />
                 <view class="photo-wall-text">
-                  <text class="photo-wall-nickname">{{ photo.userNickname }}</text>
-                  <text class="photo-wall-time">{{ photo.time }}</text>
+                  <text class="photo-wall-nickname">
+                    {{ photo.userNickname }}
+                  </text>
+                  <text class="photo-wall-time">
+                    {{ photo.time }}
+                  </text>
                 </view>
               </view>
             </view>
@@ -39,15 +50,16 @@ export default {
   props: {
     photoWallItems: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
+  emits: ['goToPhoto'],
   methods: {
     goToPhotoWall() {
       // 改为通知父组件切换到首页的“照片”标签页
-      this.$emit('go-to-photo')
+      this.$emit('goToPhoto');
     },
-    
+
     onPhotoTap(photo) {
       // 点击照片展示大图或跳转到详情
       uni.previewImage({
@@ -56,19 +68,19 @@ export default {
         indicator: 'number',
         loop: true,
         success: () => {
-          console.log('照片预览成功')
+          console.log('照片预览成功');
         },
         fail: (err) => {
-          console.error('照片预览失败:', err)
+          console.error('照片预览失败:', err);
           uni.showToast({
             title: '照片加载失败',
-            icon: 'none'
-          })
-        }
-      })
-    }
-  }
-}
+            icon: 'none',
+          });
+        },
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>

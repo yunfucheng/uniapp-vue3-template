@@ -73,6 +73,7 @@ export default {
       default: 0,
     },
   },
+  emits: ['villageChange', 'sectionSelect', 'avatarClick'],
   data() {
     return {
       statusBarHeight: 0,

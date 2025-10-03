@@ -1,72 +1,92 @@
 <template>
   <view class="home-section">
     <view class="section-header">
-      <text class="home-section-title">公告栏</text>
-      <text class="more-link" @tap="goToAnnouncements">更多</text>
+      <text class="home-section-title">
+        公告栏
+      </text>
+      <text class="more-link" @tap="goToAnnouncements">
+        更多
+      </text>
     </view>
-    
+
     <!-- 通知区域（竖向滚动） -->
-    <view class="notification-section" v-if="notifications.length > 0">
-      <swiper 
-        class="notification-swiper" 
-        :vertical="true" 
-        :autoplay="true" 
-        :interval="10000" 
+    <view v-if="notifications.length > 0" class="notification-section">
+      <swiper
+        class="notification-swiper"
+        :vertical="true"
+        :autoplay="true"
+        :interval="10000"
         :circular="true"
-        :display-multiple-items="1">
+        :display-multiple-items="1"
+      >
         <swiper-item v-for="notification in notifications" :key="notification.id" class="notification-item">
           <view class="notification-content">
             <view class="notification-left">
-              <u-icon name="bell" size="20" color="#DC2626"></u-icon>
-              <text class="notification-text">{{ notification.title }}</text>
+              <u-icon name="bell" size="20" color="#DC2626" />
+              <text class="notification-text">
+                {{ notification.title }}
+              </text>
             </view>
             <view class="notification-right">
-              <view v-if="notification.audioUrl" 
-                    class="audio-icon-notification" 
-                    @tap="playAudio(notification.audioUrl, notification.id)">
-                <u-icon 
-                  :name="currentPlayingId === notification.id ? 'volume-fill' : 'volume'" 
-                  size="20" 
-                  color="#dc2626">
-                </u-icon>
+              <view
+                v-if="notification.audioUrl"
+                class="audio-icon-notification"
+                @tap="playAudio(notification.audioUrl, notification.id)"
+              >
+                <u-icon
+                  :name="currentPlayingId === notification.id ? 'volume-fill' : 'volume'"
+                  size="20"
+                  color="#dc2626"
+                />
               </view>
-              <text class="notification-time">{{ notification.createTimeFomat }}</text>
+              <text class="notification-time">
+                {{ notification.createTimeFomat }}
+              </text>
             </view>
           </view>
         </swiper-item>
       </swiper>
     </view>
-    
+
     <!-- 公告区域（横向滚动） -->
-    <view class="announcement-section" v-if="publicAnnouncements.length > 0">
-      <swiper 
-        class="announcement-swiper" 
-        :autoplay="true" 
-        :interval="10000" 
+    <view v-if="publicAnnouncements.length > 0" class="announcement-section">
+      <swiper
+        class="announcement-swiper"
+        :autoplay="true"
+        :interval="10000"
         :circular="true"
-        indicator-active-color="#22c55e">
+        indicator-active-color="#22c55e"
+      >
         <swiper-item v-for="announcement in publicAnnouncements" :key="announcement.id" class="announcement-swiper-item">
           <view class="announcement-card-banner">
             <view class="announcement-header-banner">
-              <view class="level-badge" :style="{ backgroundColor: getLevelColor(announcement.adminLevel) + '15' }">
+              <view class="level-badge" :style="{ backgroundColor: `${getLevelColor(announcement.adminLevel)}15` }">
                 <text class="level-text" :style="{ color: getLevelColor(announcement.adminLevel) }">
                   {{ getLevelText(announcement.adminLevel) }}
                 </text>
               </view>
-              <text class="announcement-title-banner">{{ announcement.title }}</text>
-              <view v-if="announcement.audioUrl" 
-                    class="audio-icon-banner" 
-                    @tap="playAudio(announcement.audioUrl, announcement.id)">
-                <u-icon 
-                  :name="currentPlayingId === announcement.id ? 'volume-fill' : 'volume'" 
-                  size="24" 
-                  color="#22c55e">
-                </u-icon>
+              <text class="announcement-title-banner">
+                {{ announcement.title }}
+              </text>
+              <view
+                v-if="announcement.audioUrl"
+                class="audio-icon-banner"
+                @tap="playAudio(announcement.audioUrl, announcement.id)"
+              >
+                <u-icon
+                  :name="currentPlayingId === announcement.id ? 'volume-fill' : 'volume'"
+                  size="24"
+                  color="#22c55e"
+                />
               </view>
             </view>
             <view class="announcement-footer-banner">
-              <text class="announcement-text-banner">{{ announcement.text }}</text>
-              <text class="announcement-time-banner">{{ announcement.createTimeFomat }}</text>
+              <text class="announcement-text-banner">
+                {{ announcement.text }}
+              </text>
+              <text class="announcement-time-banner">
+                {{ announcement.createTimeFomat }}
+              </text>
             </view>
           </view>
         </swiper-item>
@@ -81,47 +101,48 @@ export default {
   props: {
     notifications: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     publicAnnouncements: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     currentPlayingId: {
       type: [String, Number],
-      default: null
-    }
+      default: null,
+    },
   },
+  emits: ['goToAnnouncements', 'playAudio'],
   methods: {
     goToAnnouncements() {
-      this.$emit('go-to-announcements')
+      this.$emit('goToAnnouncements');
     },
-    
+
     playAudio(audioUrl, announcementId) {
-      this.$emit('play-audio', { audioUrl, announcementId })
+      this.$emit('playAudio', { audioUrl, announcementId });
     },
-    
+
     // 获取管理级别文本
     getLevelText(adminLevel) {
       const levelMap = {
         0: '屯',
-        1: '村', 
-        2: '乡'
-      }
-      return levelMap[adminLevel] || '村'
+        1: '村',
+        2: '乡',
+      };
+      return levelMap[adminLevel] || '村';
     },
-    
+
     // 获取管理级别颜色
     getLevelColor(adminLevel) {
       const colorMap = {
         0: '#F59E0B', // 屯 - 黄色
         1: '#DC2626', // 村 - 红色
-        2: '#3B82F6'  // 乡 - 蓝色
-      }
-      return colorMap[adminLevel] || '#DC2626'
-    }
-  }
-}
+        2: '#3B82F6', // 乡 - 蓝色
+      };
+      return colorMap[adminLevel] || '#DC2626';
+    },
+  },
+};
 </script>
 
 <style scoped>

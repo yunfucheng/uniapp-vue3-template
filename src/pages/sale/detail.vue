@@ -1,41 +1,45 @@
 <template>
   <view class="sale-detail-page">
     <view>
-      <u-navbar :autoBack="true" fixed placeholder>
+      <u-navbar :auto-back="true" placeholder fixed>
         <template #right>
-          <u-button size="small" color="#09BE4F" shape="circle" @click="contact">联系</u-button>
+          <u-button size="small" color="#09BE4F" shape="circle" @click="contact">
+            联系
+          </u-button>
         </template>
       </u-navbar>
     </view>
 
     <scroll-view scroll-y class="content-scroll" :show-scrollbar="false">
       <SaleDetail v-if="item" :item="item" />
-      <view v-else class="empty"><text>暂无详情</text></view>
+      <view v-else class="empty">
+        <text>暂无详情</text>
+      </view>
     </scroll-view>
   </view>
 </template>
 
 <script>
-import DataManager from '@/utils/dataManager.js'
-import SaleDetail from '@/components/sale/SaleDetail.vue'
+import SaleDetail from '@/components/sale/SaleDetail.vue';
+import DataManager from '@/utils/dataManager.js';
 
 export default {
   name: 'SaleDetailPage',
   components: { SaleDetail },
   data() {
-    return { item: null }
+    return { item: null };
   },
   onLoad(query) {
-    const id = Number(query?.id)
-    const list = DataManager.getDefaultSaleItems()
-    this.item = list.find(i => i.id === id) || list[0]
+    const id = Number(query?.id);
+    const list = DataManager.getDefaultSaleItems();
+    this.item = list.find(i => i.id === id) || list[0];
   },
   methods: {
     contact() {
-      uni.showToast({ title: '联系卖家（占位）', icon: 'none' })
-    }
-  }
-}
+      uni.showToast({ title: '联系卖家（占位）', icon: 'none' });
+    },
+  },
+};
 </script>
 
 <style scoped>

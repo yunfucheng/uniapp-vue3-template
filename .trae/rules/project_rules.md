@@ -24,7 +24,7 @@
 - UI 组件库: uview-plus 3.4+
 - CSS 预处理器: Scss
 - CSS 框架: UnoCSS
-- 代码校验与格式化: ESLint
+ 
 - 开发语言: TypeScript
 - 包管理工具: pnpm
 
@@ -60,8 +60,6 @@
 │  ├ pages.json         # uniapp 页面配置
 │  └ uni.scss           # 全局scss变量
 ├ types                 # 全局typescript类型文件
-├ cz.config.js          # cz-git配置
-├ eslint.config.js      # eslint配置
 ├ index.html            # html入口文件
 ├ stylelint.config.js   # stylelint配置
 ├ tsconfig.json         # ts 配置
@@ -81,7 +79,7 @@
 
 ## 代码检查
 
-- 使用 ESLint 进行代码校验与格式化
+ 
 - 禁用 Prettier 进行代码格式化
 
 ## 其他

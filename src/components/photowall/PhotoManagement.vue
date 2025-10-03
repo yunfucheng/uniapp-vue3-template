@@ -5,13 +5,17 @@
         <image class="photo-image" :src="item.imageUrl" mode="aspectFill" />
         <view class="photo-info">
           <image class="user-avatar" :src="item.userAvatar" mode="aspectFill" />
-          <text class="user-nickname">{{ item.userNickname }}</text>
-          <text class="photo-time">{{ item.time }}</text>
+          <text class="user-nickname">
+            {{ item.userNickname }}
+          </text>
+          <text class="photo-time">
+            {{ item.time }}
+          </text>
         </view>
       </view>
     </view>
-    <view >
-      <up-float-button :isMenu="false" bottom="0px" backgroundColor="#09BE4F" @click="onAdd" />
+    <view>
+      <up-float-button :is-menu="false" bottom="0px" background-color="#09BE4F" @click="onAdd" />
     </view>
   </view>
 </template>
@@ -22,19 +26,19 @@ export default {
   props: {
     photos: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
-  emits: ['add-photo', 'preview-photo'],
+  emits: ['addPhoto', 'previewPhoto'],
   methods: {
     onAdd() {
-      this.$emit('add-photo')
+      this.$emit('addPhoto');
     },
     onPreview(item) {
-      this.$emit('preview-photo', item)
-    }
-  }
-}
+      this.$emit('previewPhoto', item);
+    },
+  },
+};
 </script>
 
 <style scoped>

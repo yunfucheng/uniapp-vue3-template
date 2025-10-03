@@ -1,16 +1,16 @@
 <template>
   <view class="announcement-management">
-
     <!-- 搜索栏 -->
     <view class="filter-section">
       <view class="search-bar">
-        <u-icon name="search" size="16" color="#9ca3af"></u-icon>
-        <input 
-          type="text" 
-          placeholder="搜索公告标题或内容" 
-          class="search-input"
+        <u-icon name="search" size="16" color="#9ca3af" />
+        <input
           v-model="searchKeyword"
-          @input="filterAnnouncements" />
+          type="text"
+          placeholder="搜索公告标题或内容"
+          class="search-input"
+          @input="filterAnnouncements"
+        >
       </view>
     </view>
 
@@ -19,24 +19,30 @@
       <view v-for="item in filteredAnnouncements" :key="item.id" class="announcement-card" @tap="goToDetail(item)">
         <!-- 第一行：标题 + 语音播放按钮 -->
         <view class="card-header">
-          <text class="card-title">{{ item.title }}</text>
+          <text class="card-title">
+            {{ item.title }}
+          </text>
           <view v-if="item.audioUrl" class="audio-btn" @tap.stop="playAudio(item)">
-            <u-icon name="volume" size="16" color="#22c55e"></u-icon>
+            <u-icon name="volume" size="16" color="#22c55e" />
           </view>
         </view>
-        
+
         <!-- 第二行：内容 -->
         <view class="card-content">
-          <text class="card-text">{{ item.text }}</text>
+          <text class="card-text">
+            {{ item.text }}
+          </text>
         </view>
-        
+
         <!-- 第三行：公告类型 + 公告级别 + 操作按钮 + 时间 -->
         <view class="card-footer">
           <view class="footer-left">
             <view class="type-badge" :class="item.type === 0 ? 'notification-badge' : 'announcement-badge'">
-              <text class="badge-text">{{ item.type === 0 ? '通知' : '公告' }}</text>
+              <text class="badge-text">
+                {{ item.type === 0 ? '通知' : '公告' }}
+              </text>
             </view>
-            <view class="level-badge" :style="{ backgroundColor: getLevelColor(item.adminLevel) + '15' }">
+            <view class="level-badge" :style="{ backgroundColor: `${getLevelColor(item.adminLevel)}15` }">
               <text class="level-text" :style="{ color: getLevelColor(item.adminLevel) }">
                 {{ getLevelText(item.adminLevel) }}
               </text>
@@ -44,12 +50,14 @@
           </view>
           <view class="footer-right">
             <view class="action-btn-small" @tap="editAnnouncement(item)">
-              <u-icon name="edit-pen" size="14" color="#3b82f6"></u-icon>
+              <u-icon name="edit-pen" size="14" color="#3b82f6" />
             </view>
             <view class="action-btn-small" @tap="deleteAnnouncement(item.id)">
-              <u-icon name="trash" size="14" color="#ef4444"></u-icon>
+              <u-icon name="trash" size="14" color="#ef4444" />
             </view>
-            <text class="item-time">{{ item.createTimeFomat }}</text>
+            <text class="item-time">
+              {{ item.createTimeFomat }}
+            </text>
           </view>
         </view>
       </view>
@@ -57,13 +65,17 @@
 
     <!-- 空状态 -->
     <view v-if="filteredAnnouncements.length === 0" class="empty-state">
-      <u-icon name="info" size="48" color="#d1d5db"></u-icon>
-      <text class="empty-title">暂无公告</text>
-      <text class="empty-subtitle">还没有发布任何公告</text>
+      <u-icon name="info" size="48" color="#d1d5db" />
+      <text class="empty-title">
+        暂无公告
+      </text>
+      <text class="empty-subtitle">
+        还没有发布任何公告
+      </text>
     </view>
-    
+
     <view>
-      <up-float-button :isMenu="false" backgroundColor="#09BE4F" @click="publishAnnouncement" />
+      <up-float-button :is-menu="false" background-color="#09BE4F" @click="publishAnnouncement" />
     </view>
   </view>
 </template>
@@ -74,52 +86,53 @@ export default {
   props: {
     announcements: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
+  emits: ['editAnnouncement', 'deleteAnnouncement', 'playAudio'],
   data() {
     return {
       searchKeyword: '',
-      filteredAnnouncements: []
-    }
+      filteredAnnouncements: [],
+    };
   },
 
   watch: {
     announcements: {
       handler() {
-        this.filteredAnnouncements = this.announcements
-        this.filterAnnouncements()
+        this.filteredAnnouncements = this.announcements;
+        this.filterAnnouncements();
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
     // 发布公告
     publishAnnouncement() {
       uni.navigateTo({
-        url: '/pages/announcement/add'
-      })
+        url: '/pages/announcement/add',
+      });
     },
-    
+
     // 管理公告
     manageAnnouncements() {
       uni.showActionSheet({
         itemList: ['批量删除', '导出数据', '设置权限', '查看统计'],
         success: (res) => {
-          const actions = ['批量删除', '导出数据', '设置权限', '查看统计']
+          const actions = ['批量删除', '导出数据', '设置权限', '查看统计'];
           uni.showToast({
             title: `执行: ${actions[res.tapIndex]}`,
-            icon: 'none'
-          })
-        }
-      })
+            icon: 'none',
+          });
+        },
+      });
     },
-    
+
     // 编辑公告
     editAnnouncement(item) {
-      this.$emit('edit-announcement', item)
+      this.$emit('editAnnouncement', item);
     },
-    
+
     // 删除公告
     deleteAnnouncement(id) {
       uni.showModal({
@@ -127,66 +140,65 @@ export default {
         content: '删除后无法恢复，确定要删除这条公告吗？',
         success: (res) => {
           if (res.confirm) {
-            this.$emit('delete-announcement', id)
+            this.$emit('deleteAnnouncement', id);
             uni.showToast({
               title: '删除成功',
-              icon: 'success'
-            })
+              icon: 'success',
+            });
           }
-        }
-      })
+        },
+      });
     },
-    
+
     // 播放音频
     playAudio(item) {
-      this.$emit('play-audio', { audioUrl: item.audioUrl, announcementId: item.id })
+      this.$emit('playAudio', { audioUrl: item.audioUrl, announcementId: item.id });
     },
-    
+
     // 跳转到公告详情
     goToDetail(item) {
       uni.navigateTo({
-        url: `/pages/announcement/detail?id=${item.id}`
-      })
+        url: `/pages/announcement/detail?id=${item.id}`,
+      });
     },
-    
+
     // 搜索过滤
     filterAnnouncements() {
-      let filtered = this.announcements
-      
+      let filtered = this.announcements;
+
       // 按关键词搜索
       if (this.searchKeyword) {
-        filtered = filtered.filter(item => 
-          item.title.includes(this.searchKeyword) || 
-          item.text.includes(this.searchKeyword)
-        )
+        filtered = filtered.filter(item =>
+          item.title.includes(this.searchKeyword)
+          || item.text.includes(this.searchKeyword),
+        );
       }
-      
-      this.filteredAnnouncements = filtered
+
+      this.filteredAnnouncements = filtered;
     },
-    
+
     // 获取管理级别文本
     getLevelText(adminLevel) {
       const levelMap = {
         0: '屯',
-        1: '村', 
-        2: '乡'
-      }
-      return levelMap[adminLevel] || '村'
+        1: '村',
+        2: '乡',
+      };
+      return levelMap[adminLevel] || '村';
     },
-    
+
     // 获取管理级别颜色
     getLevelColor(adminLevel) {
       const colorMap = {
         0: '#F59E0B', // 屯 - 黄色
         1: '#DC2626', // 村 - 红色
-        2: '#3B82F6'  // 乡 - 蓝色
-      }
-      return colorMap[adminLevel] || '#DC2626'
+        2: '#3B82F6', // 乡 - 蓝色
+      };
+      return colorMap[adminLevel] || '#DC2626';
     },
-    
 
-  }
-}
+  },
+};
 </script>
 
 <style scoped>

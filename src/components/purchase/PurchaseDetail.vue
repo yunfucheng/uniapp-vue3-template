@@ -4,14 +4,22 @@
     <view class="user-row">
       <image class="avatar" :src="item.userAvatar" mode="aspectFill" />
       <view class="user-meta">
-        <text class="nickname">{{ item.userNickname }}</text>
+        <text class="nickname">
+          {{ item.userNickname }}
+        </text>
         <view class="meta-line">
-          <text class="location">{{ item.location || '乌翁屯' }}</text>
-          <text class="dot">·</text>
-          <text class="time">{{ item.time }}</text>
+          <text class="location">
+            {{ item.location || '乌翁屯' }}
+          </text>
+          <text class="dot">
+            ·
+          </text>
+          <text class="time">
+            {{ item.time }}
+          </text>
         </view>
       </view>
-      <view class="action"></view>
+      <view class="action" />
     </view>
 
     <!-- 主图（可选） -->
@@ -19,46 +27,56 @@
 
     <!-- 标题与价格（仿闲鱼，价格突出） -->
     <view class="title-price">
-      <text class="title">{{ item.title }}</text>
-      <text class="price">{{ formattedPrice }}</text>
+      <text class="title">
+        {{ item.title }}
+      </text>
+      <text class="price">
+        {{ formattedPrice }}
+      </text>
     </view>
     <u-divider />
 
     <!-- 描述（此处沿用标题作为简述） -->
     <view class="desc">
-      <text class="desc-text">{{ item.title }}</text>
+      <text class="desc-text">
+        {{ item.title }}
+      </text>
     </view>
 
     <!-- 底部操作（仿闲鱼：联系 / 收藏） -->
     <view class="bottom-actions">
-      <u-button class="fav-btn" type="info" plain shape="circle" @click="onFav">收藏</u-button>
-      <u-button class="contact-btn" color="#09BE4F" shape="circle" @click="onContact">联系收购方</u-button>
+      <u-button class="fav-btn" type="info" plain shape="circle" @click="onFav">
+        收藏
+      </u-button>
+      <u-button class="contact-btn" color="#09BE4F" shape="circle" @click="onContact">
+        联系收购方
+      </u-button>
     </view>
   </view>
 </template>
 
 <script>
-import DataManager from '@/utils/dataManager.js'
+import DataManager from '@/utils/dataManager.js';
 
 export default {
   name: 'PurchaseDetail',
   props: {
-    item: { type: Object, required: true }
+    item: { type: Object, required: true },
   },
   computed: {
     formattedPrice() {
-      return DataManager.formatPrice(this.item?.price || '', 'purchase')
-    }
+      return DataManager.formatPrice(this.item?.price || '', 'purchase');
+    },
   },
   methods: {
     onFav() {
-      uni.showToast({ title: '已收藏（占位）', icon: 'none' })
+      uni.showToast({ title: '已收藏（占位）', icon: 'none' });
     },
     onContact() {
-      uni.showToast({ title: '联系收购方（占位）', icon: 'none' })
-    }
-  }
-}
+      uni.showToast({ title: '联系收购方（占位）', icon: 'none' });
+    },
+  },
+};
 </script>
 
 <style scoped>

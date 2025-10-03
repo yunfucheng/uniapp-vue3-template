@@ -1,23 +1,29 @@
 <template>
   <view class="banner-section">
-    <swiper 
-      class="banner-swiper" 
-      :autoplay="true" 
-      :interval="5000" 
-      :duration="800" 
+    <swiper
+      class="banner-swiper"
+      :autoplay="true"
+      :interval="5000"
+      :duration="800"
       :circular="true"
       indicator-dots="true"
       indicator-color="rgba(255, 255, 255, 0.4)"
-      indicator-active-color="#22c55e">
+      indicator-active-color="#22c55e"
+    >
       <swiper-item v-for="(banner, index) in banners" :key="index" class="banner-item">
-        <image 
-          class="banner-image" 
-          :src="banner.imageUrl" 
-          mode="aspectFill" 
-          @tap="onBannerTap(banner)" />
+        <image
+          class="banner-image"
+          :src="banner.imageUrl"
+          mode="aspectFill"
+          @tap="onBannerTap(banner)"
+        />
         <view class="banner-overlay">
-          <text class="banner-title">{{ banner.title }}</text>
-          <text class="banner-describe" v-if="banner.describe">{{ banner.describe }}</text>
+          <text class="banner-title">
+            {{ banner.title }}
+          </text>
+          <text v-if="banner.describe" class="banner-describe">
+            {{ banner.describe }}
+          </text>
         </view>
       </swiper-item>
     </swiper>
@@ -30,8 +36,8 @@ export default {
   props: {
     banners: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   methods: {
     onBannerTap(banner) {
@@ -42,19 +48,19 @@ export default {
         indicator: 'number',
         loop: true,
         success: () => {
-          console.log('图片预览成功')
+          console.log('图片预览成功');
         },
         fail: (err) => {
-          console.error('图片预览失败:', err)
+          console.error('图片预览失败:', err);
           uni.showToast({
             title: '图片加载失败',
-            icon: 'none'
-          })
-        }
-      })
-    }
-  }
-}
+            icon: 'none',
+          });
+        },
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>

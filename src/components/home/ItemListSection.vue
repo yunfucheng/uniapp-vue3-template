@@ -1,10 +1,14 @@
 <template>
   <view class="home-section">
     <view class="section-header">
-      <text class="home-section-title">{{ title }}</text>
-      <text class="more-link" @tap="goToList">更多</text>
+      <text class="home-section-title">
+        {{ title }}
+      </text>
+      <text class="more-link" @tap="goToList">
+        更多
+      </text>
     </view>
-    
+
     <view class="item-list">
       <view v-for="item in items" :key="item.id" class="item-card" @tap="goToDetail(item)">
         <!-- 顶部主行：图片 + 文本内容（横向） -->
@@ -12,19 +16,27 @@
           <image v-if="item.image && type === 'sale'" class="item-image" :src="item.image" mode="aspectFill" />
 
           <view class="item-content" :class="{ 'no-image': !item.image || type === 'purchase' }">
-            <text class="item-title">{{ item.title }}</text>
+            <text class="item-title">
+              {{ item.title }}
+            </text>
             <view class="item-price-location">
               <text class="item-price" :class="type">
-                {{ type === 'sale' ? '￥' + item.price : '每斤' + item.price + '元' }}
+                {{ type === 'sale' ? `￥${item.price}` : `每斤${item.price}元` }}
               </text>
               <!-- 出售保留右侧位置，收购不在此行展示位置 -->
-              <text v-if="type === 'sale'" class="item-location">{{ item.location }}</text>
+              <text v-if="type === 'sale'" class="item-location">
+                {{ item.location }}
+              </text>
             </view>
             <view class="item-user-info">
               <image class="user-avatar" :src="item.userAvatar" mode="aspectFill" />
-              <text class="user-nickname">{{ item.userNickname }}</text>
+              <text class="user-nickname">
+                {{ item.userNickname }}
+              </text>
               <!-- 出售保留右侧时间，收购不在此行展示时间 -->
-              <text v-if="type === 'sale'" class="item-time">{{ item.time }}</text>
+              <text v-if="type === 'sale'" class="item-time">
+                {{ item.time }}
+              </text>
             </view>
           </view>
 
@@ -33,8 +45,12 @@
 
         <!-- 底部单独一行：靠右显示（用于收购信息） -->
         <view v-if="type === 'purchase'" class="item-meta-row">
-          <text class="item-location">{{ item.location }}</text>
-          <text class="item-time">{{ item.time }}</text>
+          <text class="item-location">
+            {{ item.location }}
+          </text>
+          <text class="item-time">
+            {{ item.time }}
+          </text>
         </view>
       </view>
     </view>
@@ -47,32 +63,32 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     items: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     type: {
       type: String,
       required: true, // 'sale' or 'purchase'
-      validator: (value) => ['sale', 'purchase'].includes(value)
-    }
+      validator: value => ['sale', 'purchase'].includes(value),
+    },
   },
   methods: {
     goToList() {
-      const url = this.type === 'sale' ? '/pages/sale/sale' : '/pages/purchase/purchase'
-      uni.navigateTo({ url })
+      const url = this.type === 'sale' ? '/pages/sale/sale' : '/pages/purchase/purchase';
+      uni.navigateTo({ url });
     },
-    
+
     goToDetail(item) {
-      const url = this.type === 'sale' 
-        ? `/pages/sale/detail?id=${item.id}` 
-        : `/pages/purchase/detail?id=${item.id}`
-      uni.navigateTo({ url })
-    }
-  }
-}
+      const url = this.type === 'sale'
+        ? `/pages/sale/detail?id=${item.id}`
+        : `/pages/purchase/detail?id=${item.id}`;
+      uni.navigateTo({ url });
+    },
+  },
+};
 </script>
 
 <style scoped>

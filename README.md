@@ -26,8 +26,7 @@
 - [x] 封装网络请求，并支持`Typescript`
 - [x] 支持路径别名
 - [x] 支持自动加载组件和`API`
-- [x] 自动校验`git`提交代码格式
-- [x] 集成`ESLint`、`StyleLint`、`EditorConfig`代码格式规范
+- [x] 集成`StyleLint`、`EditorConfig`代码格式规范
 - [x] `Typescript`支持
 - [x] 集成`UnoCSS`
 - [x] 集成`iconify`图标库
@@ -58,7 +57,6 @@ uniapp-vue3-project
 ├ env                   环境变量
 ├ scripts               一些脚本
 │  ├ post-upgrade.js     依赖库清理
-│  └ verify-commit.js    git提交检验
 ├ src
 │  ├ api                接口管理
 │  ├ components         公共组件
@@ -82,8 +80,6 @@ uniapp-vue3-project
 │  └ module.d.ts
 ├ LICENSE
 ├ README.md
-├ cz.config.js          cz-git配置
-├ eslint.config.js      eslint配置
 ├ index.html
 ├ package.json
 ├ pnpm-lock.yaml

@@ -1,15 +1,17 @@
 <template>
   <view class="photo-manage-page">
     <!-- 顶部导航，与公告保持一致风格 -->
-  <view class="custom-navbar">
-     <view class="navbar-content">
+    <view class="custom-navbar">
+      <view class="navbar-content">
         <view class="navbar-left" @tap="goBack">
-          <u-icon name="arrow-left" size="20" color="#1f2937"></u-icon>
+          <u-icon name="arrow-left" size="20" color="#1f2937" />
         </view>
         <view class="navbar-title">
-          <text class="title-text">照片管理</text>
+          <text class="title-text">
+            照片管理
+          </text>
         </view>
-        <view class="navbar-right"></view>
+        <view class="navbar-right" />
       </view>
     </view>
 
@@ -26,34 +28,34 @@
 </template>
 
 <script>
-import PhotoManagement from '@/components/photowall/PhotoManagement.vue'
-import DataManager from '@/utils/dataManager.js'
+import PhotoManagement from '@/components/photowall/PhotoManagement.vue';
+import DataManager from '@/utils/dataManager.js';
 
 export default {
   name: 'PhotoManagePage',
   components: { PhotoManagement },
   data() {
     return {
-      photos: DataManager.getDefaultPhotoWallItems()
-    }
+      photos: DataManager.getDefaultPhotoWallItems(),
+    };
   },
   methods: {
     goBack() {
-      uni.navigateBack()
+      uni.navigateBack();
     },
     previewPhoto(item) {
       uni.previewImage({
         current: item.imageUrl,
         urls: this.photos.map(p => p.imageUrl),
         indicator: 'number',
-        loop: true
-      })
+        loop: true,
+      });
     },
     goToAddPhoto() {
-      uni.navigateTo({ url: '/pages/photowall/add' })
-    }
-  }
-}
+      uni.navigateTo({ url: '/pages/photowall/add' });
+    },
+  },
+};
 </script>
 
 <style scoped>

@@ -2,7 +2,9 @@
   <view class="store-list">
     <!-- 筛选标签 -->
     <view class="filter-bar">
-      <text class="filter-title">筛选标签</text>
+      <text class="filter-title">
+        筛选标签
+      </text>
       <view class="tag-list">
         <u-tag
           v-for="tag in tagOptions"
@@ -31,14 +33,20 @@
         <image v-if="item.image" class="card-image" :src="item.image" mode="aspectFill" />
         <view class="card-body">
           <view class="row top-row">
-            <text class="name">{{ item.name }}</text>
+            <text class="name">
+              {{ item.name }}
+            </text>
             <u-tag :text="item.status" :type="item.status === '营业中' ? 'success' : 'default'" size="mini" />
           </view>
           <view class="row location">
             <u-icon name="map" size="16" color="#64748b" />
-            <text class="loc-text">{{ item.location }}</text>
+            <text class="loc-text">
+              {{ item.location }}
+            </text>
           </view>
-          <view class="desc">{{ item.desc }}</view>
+          <view class="desc">
+            {{ item.desc }}
+          </view>
           <view class="row tags">
             <u-tag
               v-for="t in item.tags"
@@ -56,8 +64,12 @@
               color="#09BE4F"
               shape="circle"
               @click="call(item.phone)"
-            >电话联系</u-button>
-            <u-button v-else type="info" plain shape="circle" disabled>暂无电话</u-button>
+            >
+              电话联系
+            </u-button>
+            <u-button v-else type="info" plain shape="circle" disabled>
+              暂无电话
+            </u-button>
           </view>
         </view>
       </view>
@@ -69,33 +81,33 @@
 export default {
   name: 'StoreList',
   props: {
-    items: { type: Array, default: () => [] }
+    items: { type: Array, default: () => [] },
   },
   data() {
     return {
       tagOptions: ['日常用品', '粉店', '饭店', '住宿', '快递', '便车'],
-      selectedTag: ''
-    }
+      selectedTag: '',
+    };
   },
   computed: {
     filteredItems() {
-      if (!this.selectedTag) return this.items
-      return this.items.filter(i => Array.isArray(i.tags) && i.tags.includes(this.selectedTag))
-    }
+      if (!this.selectedTag) return this.items;
+      return this.items.filter(i => Array.isArray(i.tags) && i.tags.includes(this.selectedTag));
+    },
   },
   methods: {
     toggleTag(tag) {
-      this.selectedTag = this.selectedTag === tag ? '' : tag
+      this.selectedTag = this.selectedTag === tag ? '' : tag;
     },
     resetTag() {
-      this.selectedTag = ''
+      this.selectedTag = '';
     },
     call(phone) {
-      if (!phone) return
-      uni.makePhoneCall({ phoneNumber: phone })
-    }
-  }
-}
+      if (!phone) return;
+      uni.makePhoneCall({ phoneNumber: phone });
+    },
+  },
+};
 </script>
 
 <style scoped>

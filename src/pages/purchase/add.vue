@@ -1,9 +1,11 @@
 <template>
   <view class="add-purchase-page">
     <view>
-      <u-navbar :autoBack="true" fixed placeholder>
+      <u-navbar :auto-back="true" placeholder fixed>
         <template #right>
-          <u-button size="small" color="#09BE4F" shape="circle" @click="publish">发布</u-button>
+          <u-button size="small" color="#09BE4F" shape="circle" @click="publish">
+            发布
+          </u-button>
         </template>
       </u-navbar>
     </view>
@@ -23,18 +25,26 @@
 
         <!-- 选择项：可见范围、结束时间 -->
         <view class="selector-row" @tap="showScopeSelector">
-          <text class="selector-label">可见范围</text>
+          <text class="selector-label">
+            可见范围
+          </text>
           <view class="selector-right">
-            <text class="selector-value">{{ visibleScope }}</text>
+            <text class="selector-value">
+              {{ visibleScope }}
+            </text>
             <u-icon name="arrow-right" size="16" color="#9ca3af" />
           </view>
         </view>
         <u-divider />
 
         <view class="selector-row" @tap="showEndSelector">
-          <text class="selector-label">结束时间</text>
+          <text class="selector-label">
+            结束时间
+          </text>
           <view class="selector-right">
-            <text class="selector-value">{{ endTimeText }}</text>
+            <text class="selector-value">
+              {{ endTimeText }}
+            </text>
             <u-icon name="arrow-right" size="16" color="#9ca3af" />
           </view>
         </view>
@@ -52,46 +62,46 @@ export default {
       title: '',
       priceDesc: '',
       visibleScope: '乡',
-      endTimeText: '长期'
-    }
+      endTimeText: '长期',
+    };
   },
   methods: {
     showScopeSelector() {
       uni.showActionSheet({
         itemList: ['乡', '村', '屯'],
         success: (res) => {
-          const scopes = ['乡', '村', '屯']
-          this.visibleScope = scopes[res.tapIndex]
-        }
-      })
+          const scopes = ['乡', '村', '屯'];
+          this.visibleScope = scopes[res.tapIndex];
+        },
+      });
     },
     showEndSelector() {
       uni.showActionSheet({
         itemList: ['长期', '1天', '3天', '7天'],
         success: (res) => {
-          const ends = ['长期', '1天', '3天', '7天']
-          this.endTimeText = ends[res.tapIndex]
-        }
-      })
+          const ends = ['长期', '1天', '3天', '7天'];
+          this.endTimeText = ends[res.tapIndex];
+        },
+      });
     },
     publish() {
       if (!this.title.trim()) {
-        uni.showToast({ title: '请填写收购信息描述', icon: 'none' })
-        return
+        uni.showToast({ title: '请填写收购信息描述', icon: 'none' });
+        return;
       }
       if (!this.priceDesc.trim()) {
-        uni.showToast({ title: '请填写价格描述', icon: 'none' })
-        return
+        uni.showToast({ title: '请填写价格描述', icon: 'none' });
+        return;
       }
-      uni.showLoading({ title: '正在发布...' })
+      uni.showLoading({ title: '正在发布...' });
       setTimeout(() => {
-        uni.hideLoading()
-        uni.showToast({ title: '已发布', icon: 'success' })
-        setTimeout(() => uni.navigateBack(), 600)
-      }, 800)
-    }
-  }
-}
+        uni.hideLoading();
+        uni.showToast({ title: '已发布', icon: 'success' });
+        setTimeout(() => uni.navigateBack(), 600);
+      }, 800);
+    },
+  },
+};
 </script>
 
 <style scoped>

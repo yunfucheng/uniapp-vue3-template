@@ -1,9 +1,11 @@
 <template>
   <view class="add-announcement">
     <view>
-      <u-navbar :autoBack="true" fixed placeholder>
+      <u-navbar :auto-back="true" placeholder fixed>
         <template #right>
-          <u-button size="small" color="#09BE4F" shape="circle" @click="submitForm">发布</u-button>
+          <u-button size="small" color="#09BE4F" shape="circle" @click="submitForm">
+            发布
+          </u-button>
         </template>
       </u-navbar>
     </view>
@@ -13,55 +15,67 @@
       <view class="form-content">
         <!-- 输入标题：移除分区标题，仅保留输入框 -->
         <view class="section">
-          <input class="text-input" v-model="formData.title" placeholder="请输入标题" maxlength="50" />
+          <input v-model="formData.title" class="text-input" placeholder="请输入标题" maxlength="50">
         </view>
-        <view class="divider"></view>
+        <view class="divider" />
 
         <!-- 输入内容：移除分区标题，仅保留输入框 -->
         <view class="section">
-          <textarea class="text-area" v-model="formData.content" placeholder="请输入公告内容" maxlength="1000" auto-height />
-          <view class="char-count">{{ formData.content.length }}/1000</view>
+          <textarea v-model="formData.content" class="text-area" placeholder="请输入公告内容" maxlength="1000" auto-height />
+          <view class="char-count">
+            {{ formData.content.length }}/1000
+          </view>
         </view>
-        <view class="divider"></view>
+        <view class="divider" />
 
         <!-- 图片上传：使用 uview-plus 的 u-upload -->
         <view class="section">
           <u-upload
-            v-model:fileList="imageFiles"
+            v-model:file-list="imageFiles"
             accept="image"
-            :maxCount="9"
-            :autoUpload="false"
-            @afterRead="onImageRead"
+            :max-count="9"
+            :auto-upload="false"
+            @after-read="onImageRead"
             @delete="onImageDelete"
           />
         </view>
-        <view class="divider"></view>
+        <view class="divider" />
 
         <!-- 公告类型 -->
         <view class="row-item" @tap="chooseType">
-          <text class="row-label">公告类型</text>
+          <text class="row-label">
+            公告类型
+          </text>
           <view class="row-value">
-            <text class="value-text">{{ typeText }}</text>
-            <u-icon name="arrow-right" size="18" color="#9ca3af"></u-icon>
+            <text class="value-text">
+              {{ typeText }}
+            </text>
+            <u-icon name="arrow-right" size="18" color="#9ca3af" />
           </view>
         </view>
-        <view class="divider"></view>
+        <view class="divider" />
 
         <!-- 级别类型 -->
         <view class="row-item" @tap="chooseLevel">
-          <text class="row-label">级别类型</text>
+          <text class="row-label">
+            级别类型
+          </text>
           <view class="row-value">
-            <text class="value-text">{{ levelText }}</text>
-            <u-icon name="arrow-right" size="18" color="#9ca3af"></u-icon>
+            <text class="value-text">
+              {{ levelText }}
+            </text>
+            <u-icon name="arrow-right" size="18" color="#9ca3af" />
           </view>
         </view>
-        <view class="divider"></view>
+        <view class="divider" />
 
         <!-- 语音输入 -->
         <view class="row-item" @tap="openVoicePopup">
-          <text class="row-label">语音输入</text>
+          <text class="row-label">
+            语音输入
+          </text>
           <view class="row-value">
-            <u-icon name="arrow-right" size="18" color="#9ca3af"></u-icon>
+            <u-icon name="arrow-right" size="18" color="#9ca3af" />
           </view>
         </view>
       </view>
@@ -71,23 +85,35 @@
     <u-popup :show="voicePopupShow" mode="bottom" @close="closeVoicePopup">
       <view class="voice-popup">
         <view class="popup-header">
-          <text class="popup-title">语音输入</text>
+          <text class="popup-title">
+            语音输入
+          </text>
           <view class="popup-close" @tap="closeVoicePopup">
-            <u-icon name="close" size="20" color="#6b7280"></u-icon>
+            <u-icon name="close" size="20" color="#6b7280" />
           </view>
         </view>
         <view class="popup-content">
           <view class="record-area">
-            <view class="record-btn" @tap="startRecord" :class="{ recording: isRecording }">
-              <text class="record-icon">🎤</text>
-              <text class="record-text">{{ isRecording ? '录音中...' : '开始录音' }}</text>
+            <view class="record-btn" :class="{ recording: isRecording }" @tap="startRecord">
+              <text class="record-icon">
+                🎤
+              </text>
+              <text class="record-text">
+                {{ isRecording ? '录音中...' : '开始录音' }}
+              </text>
             </view>
-            <view class="record-tip">点击开始，再次点击结束</view>
+            <view class="record-tip">
+              点击开始，再次点击结束
+            </view>
           </view>
           <view v-if="audioPath" class="voice-preview">
             <view class="audio-info">
-              <text class="audio-icon">🎵</text>
-              <text class="audio-duration">{{ audioDuration }}s</text>
+              <text class="audio-icon">
+                🎵
+              </text>
+              <text class="audio-duration">
+                {{ audioDuration }}s
+              </text>
             </view>
             <view class="audio-controls">
               <view class="control-btn" @tap="playAudio">
@@ -132,7 +158,7 @@ export default {
         level: 'tun',
         content: '',
         audioPath: '',
-        images: []
+        images: [],
       },
       imageFiles: [],
       audioPath: '',
@@ -145,82 +171,92 @@ export default {
       showLevelSheet: false,
       typeActions: [
         { name: '公告', value: 'announcement' },
-        { name: '通知', value: 'notice' }
+        { name: '通知', value: 'notice' },
       ],
       levelActions: [
         { name: '乡级', value: 'township' },
         { name: '村级', value: 'village' },
-        { name: '屯级', value: 'tun' }
-      ]
-    }
+        { name: '屯级', value: 'tun' },
+      ],
+    };
   },
   computed: {
     typeText() {
-      return this.formData.type === 'notice' ? '通知' : '公告'
+      return this.formData.type === 'notice' ? '通知' : '公告';
     },
     levelText() {
-      const map = { tun: '屯级', village: '村级', township: '乡级' }
-      return map[this.formData.level] || '屯级'
-    }
+      const map = { tun: '屯级', village: '村级', township: '乡级' };
+      return map[this.formData.level] || '屯级';
+    },
   },
   methods: {
     goBack() {
-      uni.navigateBack()
+      uni.navigateBack();
     },
     chooseType() {
-      this.showTypeSheet = true
+      this.showTypeSheet = true;
     },
     chooseLevel() {
-      this.showLevelSheet = true
+      this.showLevelSheet = true;
     },
     openVoicePopup() {
-      this.voicePopupShow = true
+      this.voicePopupShow = true;
     },
     closeVoicePopup() {
-      this.voicePopupShow = false
+      this.voicePopupShow = false;
     },
     // 开始录音
     startRecord() {
       if (this.isRecording) {
-        this.stopRecord()
-        return
+        this.stopRecord();
+        return;
       }
-      this.isRecording = true
-      this.recordStartTime = Date.now()
-      this.recorderManager = uni.getRecorderManager()
-      this.recorderManager.onStart(() => {})
+      this.isRecording = true;
+      this.recordStartTime = Date.now();
+      this.recorderManager = uni.getRecorderManager();
+      this.recorderManager.onStart(() => {});
       this.recorderManager.onStop((res) => {
-        this.audioPath = res.tempFilePath
-        this.audioDuration = Math.floor((Date.now() - this.recordStartTime) / 1000)
-        this.formData.audioPath = res.tempFilePath
-        this.isRecording = false
-      })
+        this.audioPath = res.tempFilePath;
+        this.audioDuration = Math.floor((Date.now() - this.recordStartTime) / 1000);
+        this.formData.audioPath = res.tempFilePath;
+        this.isRecording = false;
+      });
       this.recorderManager.start({
         duration: 60000,
         sampleRate: 16000,
         numberOfChannels: 1,
         encodeBitRate: 96000,
-        format: 'mp3'
-      })
+        format: 'mp3',
+      });
     },
     stopRecord() {
       if (this.recorderManager) {
-        this.recorderManager.stop()
+        this.recorderManager.stop();
       }
     },
     playAudio() {
-      if (!this.audioPath) return
-      if (this.isPlaying) {
-        if (this.innerAudioContext) this.innerAudioContext.pause()
-        this.isPlaying = false
-        return
+      if (!this.audioPath) {
+        return;
       }
-      this.innerAudioContext = uni.createInnerAudioContext()
-      this.innerAudioContext.src = this.audioPath
-      this.innerAudioContext.onPlay(() => { this.isPlaying = true })
-      this.innerAudioContext.onEnded(() => { this.isPlaying = false })
-      this.innerAudioContext.onError(() => { this.isPlaying = false })
-      this.innerAudioContext.play()
+      if (this.isPlaying) {
+        if (this.innerAudioContext) {
+          this.innerAudioContext.pause();
+        }
+        this.isPlaying = false;
+        return;
+      }
+      this.innerAudioContext = uni.createInnerAudioContext();
+      this.innerAudioContext.src = this.audioPath;
+      this.innerAudioContext.onPlay(() => {
+        this.isPlaying = true;
+      });
+      this.innerAudioContext.onEnded(() => {
+        this.isPlaying = false;
+      });
+      this.innerAudioContext.onError(() => {
+        this.isPlaying = false;
+      });
+      this.innerAudioContext.play();
     },
     deleteAudio() {
       uni.showModal({
@@ -228,57 +264,65 @@ export default {
         content: '确定要删除这段录音吗？',
         success: (res) => {
           if (res.confirm) {
-            this.audioPath = ''
-            this.audioDuration = 0
-            this.formData.audioPath = ''
-            if (this.innerAudioContext) this.innerAudioContext.destroy()
+            this.audioPath = '';
+            this.audioDuration = 0;
+            this.formData.audioPath = '';
+            if (this.innerAudioContext) {
+              this.innerAudioContext.destroy();
+            }
           }
-        }
-      })
+        },
+      });
     },
     onImageRead(e) {
-      const files = Array.isArray(e.file) ? e.file : [e.file]
-      this.imageFiles = [...this.imageFiles, ...files]
-      this.formData.images = this.imageFiles.map(f => f.url || f.path || f.tempFilePath).filter(Boolean)
+      const files = Array.isArray(e.file) ? e.file : [e.file];
+      this.imageFiles = [...this.imageFiles, ...files];
+      this.formData.images = this.imageFiles.map(f => f.url || f.path || f.tempFilePath).filter(Boolean);
     },
     onImageDelete(e) {
-      const idx = e?.index
+      const idx = e?.index;
       if (typeof idx === 'number') {
-        this.imageFiles.splice(idx, 1)
+        this.imageFiles.splice(idx, 1);
       }
-      this.formData.images = this.imageFiles.map(f => f.url || f.path || f.tempFilePath).filter(Boolean)
+      this.formData.images = this.imageFiles.map(f => f.url || f.path || f.tempFilePath).filter(Boolean);
     },
     onTypeSelect(action) {
-      this.formData.type = action?.value === 'notice' ? 'notice' : 'announcement'
-      this.showTypeSheet = false
+      this.formData.type = action?.value === 'notice' ? 'notice' : 'announcement';
+      this.showTypeSheet = false;
     },
     onLevelSelect(action) {
-      const v = action?.value
-      this.formData.level = v === 'township' ? 'township' : v === 'village' ? 'village' : 'tun'
-      this.showLevelSheet = false
+      const v = action?.value;
+      this.formData.level = v === 'township' ? 'township' : v === 'village' ? 'village' : 'tun';
+      this.showLevelSheet = false;
     },
     saveAnnouncement() {
       if (!this.formData.title.trim()) {
-        uni.showToast({ title: '请输入标题', icon: 'none' })
-        return
+        uni.showToast({ title: '请输入标题', icon: 'none' });
+        return;
       }
       if (!this.formData.content.trim() && !this.formData.audioPath) {
-        uni.showToast({ title: '请输入内容或录制语音', icon: 'none' })
-        return
+        uni.showToast({ title: '请输入内容或录制语音', icon: 'none' });
+        return;
       }
-      uni.showLoading({ title: '保存中...' })
+      uni.showLoading({ title: '保存中...' });
       setTimeout(() => {
-        uni.hideLoading()
-        uni.showToast({ title: '保存成功', icon: 'success' })
-        setTimeout(() => { uni.navigateBack() }, 1200)
-      }, 1200)
-    }
+        uni.hideLoading();
+        uni.showToast({ title: '保存成功', icon: 'success' });
+        setTimeout(() => {
+          uni.navigateBack();
+        }, 1200);
+      }, 1200);
+    },
   },
   onUnload() {
-    if (this.innerAudioContext) this.innerAudioContext.destroy()
-    if (this.recorderManager) this.recorderManager.stop()
-  }
-}
+    if (this.innerAudioContext) {
+      this.innerAudioContext.destroy();
+    }
+    if (this.recorderManager) {
+      this.recorderManager.stop();
+    }
+  },
+};
 </script>
 
 <style scoped>
