@@ -2,7 +2,7 @@
   <view class="messages-page min-h-full bg-gray-50 pb-16">
     <!-- 顶部自定义导航栏 -->
     <view>
-      <u-navbar title="消息中心" placeholder fixed>
+      <u-navbar title="消息中心" placeholder>
         <template #left />
         <template #right>
           <u-icon name="trash" size="20" color="#64748b" />

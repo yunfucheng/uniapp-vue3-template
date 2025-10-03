@@ -83,5 +83,4 @@ export default {
 </script>
 
 <style scoped>
-/* 使用 uview-plus Tabbar，无需自定义样式，这里留空以避免样式干扰 */
 </style>

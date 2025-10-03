@@ -180,10 +180,6 @@
       </swiper>
     </view>
 
-    <!-- 自定义底部导航 -->
-    <view class="fab-add-photo" @click="goToAddPhoto">
-      <u-icon name="plus" size="28" color="#16a34a" />
-    </view>
     <CustomTabbar />
   </view>
 </template>
@@ -543,32 +539,6 @@ export default {
   text-align: center;
   padding: 80rpx 0;
   display: block;
-}
-
-body {
-  overflow: hidden !important;
-  height: 100vh !important;
-}
-
-/* 照片列表样式（与独立照片页面保持一致的视觉） */
-.photo-list {
-  margin: 0 32rpx 24rpx 32rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-}
-
-.photo-card {
-  background-color: #ffffff;
-  border-radius: 16rpx;
-  overflow: hidden;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
-}
-
-.photo-image {
-  width: 100%;
-  height: 380rpx;
-  background-color: #f3f4f6;
 }
 
 .photo-info {

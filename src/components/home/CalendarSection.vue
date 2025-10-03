@@ -64,7 +64,7 @@ export default {
   background-color: #fff8e1;
   margin: 0 32rpx 32rpx;
   border-radius: 24rpx;
-  padding: 32rpx;
+  padding: 20rpx;
   border: 2rpx solid #ffe082;
 }
 

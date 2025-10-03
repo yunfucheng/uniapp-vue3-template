@@ -1,21 +1,16 @@
 <template>
-  <view class="calendar-detail-container">
+  <view>
     <!-- 顶部导航栏 -->
-    <view class="navigation-header">
-      <u-icon name="arrow-left" size="20" color="#333333" class="nav-back-icon" @click="goBack" />
-      <text class="nav-title">
-        黄历
-      </text>
-      <view class="nav-placeholder" />
+    <view>
+      <u-navbar :auto-back="true" title="黄历" placeholder>
+      </u-navbar>
     </view>
 
     <!-- 日期切换控制 -->
     <view class="date-nav-controls">
-      <button class="date-nav-btn" @click="previousDay">
-        <text class="nav-icon">
-          ‹
-        </text>
-      </button>
+      <up-button class="date-nav-btn" @click="previousDay">
+        <up-icon name="arrow-left"></up-icon>
+      </up-button>
       <view class="date-display" @click="showDatePicker = true">
         <text class="date-text">
           {{ calendarData.date }}
@@ -24,11 +19,9 @@
           {{ calendarData.lunarCalendar }}
         </text>
       </view>
-      <button class="date-nav-btn" @click="nextDay">
-        <text class="nav-icon">
-          ›
-        </text>
-      </button>
+      <up-button class="date-nav-btn" @click="nextDay">
+        <up-icon name="arrow-right"></up-icon>
+      </up-button>
     </view>
 
     <!-- 主要内容区域 -->
@@ -552,7 +545,7 @@ export default {
 }
 
 .info-item {
-  font-size: 15px;
+  font-size: 13px;
   color: #333;
   font-weight: 500;
   padding: 8px 12px;
@@ -600,7 +593,7 @@ export default {
 .item-tag {
   padding: 10px 16px;
   border-radius: 24px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .good-tag {
