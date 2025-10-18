@@ -310,7 +310,6 @@ export default {
   background-color: var(--theme-primary-08);
   border-radius: 50%;
 }
-}
 
 .navbar-title {
   flex: 1;
