@@ -16,17 +16,15 @@ import { useAppStore } from '@/store';
 
 const appStore = useAppStore();
 
-const colors = [{
-  name: '',
-  color: '#21d59d',
-}, {
-  name: 'blue',
-  color: '#3c9cff',
-}];
+const colors = [
+  { name: 'light', color: '#21d59d' },
+  { name: 'dark', color: '#3c9cff' },
+  { name: 'auto', color: '#888888' },
+];
 
 const theme = computed(() => appStore.getTheme);
 
 function changeTheme(theme: string) {
-  appStore.setTheme(theme);
+  appStore.setTheme(theme as any);
 }
 </script>

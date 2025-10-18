@@ -217,3 +217,30 @@
 - 禁止自动提交，除非有明确的指示
 - 提交前确保代码通过代码校验和单元测试
 - 避免大型提交，尽量将变更分解为小的、相关的提交
+
+# 统一主题与品牌色
+
+- 入口与职责
+  - `src/static/styles/theme.scss`: 定义全局 CSS 变量（主色、文字、背景、边框等），以及暗色主题 `.theme-dark` 的变量覆盖；已补充 `--theme-primary-dark`。
+  - `src/uni.scss`: 将 uview-plus 的 SCSS 变量映射到上述 CSS 变量，保证组件库统一用色（如 `$u-primary: var(--theme-primary)`）。
+  - `uno.config.ts`: 将 UnoCSS 的 `theme.colors` 映射到同一套 CSS 变量（如 `'primary': 'var(--theme-primary)'`），统一原子类与组件用色。
+  - `src/plugins/theme.ts`: 运行时主题应用，基于 `pinia` 中的主题状态为 H5 端根元素切换 `.theme-dark` 类，驱动 CSS 变量切换；支持 `ThemeMode` 的 `light | dark | auto`。
+
+- 使用与约定
+  - 页面与组件样式优先使用 CSS 变量或 UnoCSS 映射：`color: var(--theme-main-color)`、`bg-bg-main`、`c-primary` 等，避免硬编码颜色。
+  - 全局页面基础色由 `src/static/styles/common.scss` 设置：`$u-main-color`、`$u-bg-color`。
+
+- 主题切换
+  - 通过 `useTheme` 或 `useAppStore().setTheme(mode)` 切换主题；`mode` 取值为 `'light' | 'dark' | 'auto'`。
+  - H5：运行时插件会将 `.theme-dark` 类添加到 `document.documentElement`；`auto` 模式基于系统暗色偏好（`prefers-color-scheme`）动态切换。
+  - 小程序等非 H5 端：建议在页面根容器上根据状态绑定类名（如 `:class="theme==='dark' ? 'theme-dark' : ''"`），以启用暗色变量覆盖。
+
+- 品牌色扩展
+  - 如需新增品牌主题（例如 `theme-blue`）：在 `src/static/styles/theme.scss` 新增 `.theme-blue { ...同名变量覆写... }`，并在运行时根据选择切换对应类名。
+  - 对应的选择入口可在 `@/components/theme-picker/index.vue` 增加选项，传入同名 `name`，使 `store` 持久化保存选择（当前已支持 `light/dark/auto`）。
+
+- 变量命名建议
+  - 主色：`--theme-primary`，按需提供 `--theme-primary-dark` 用于按压或深色态对比。
+  - 文本：`--theme-main-color`、`--theme-content-color`、`--theme-tips-color` 等。
+  - 背景：`--theme-bg-color`、`--theme-bg-color-secondary`。
+  - 边框：`--theme-border-color`。
