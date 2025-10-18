@@ -241,7 +241,7 @@ export default {
 }
 
 .function-nav-item-active {
-  background-color: rgba(34, 197, 94, 0.15);
+  background-color: var(--theme-primary-15);
   transform: scale(1.05);
 }
 
@@ -267,7 +267,7 @@ export default {
   gap: 8rpx;
   padding: 8rpx 16rpx;
   border-radius: 999rpx;
-  background-color: rgba(34, 197, 94, 0.08);
+  background-color: var(--theme-primary-08);
   border: 1rpx solid var(--theme-border-color);
 }
 

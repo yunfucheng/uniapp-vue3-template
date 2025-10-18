@@ -484,7 +484,7 @@ export default {
 
 <style scoped>
 .container {
-  background-color: #f9fafb;
+  background-color: var(--theme-bg-color-secondary);
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -535,7 +535,7 @@ export default {
 
 .placeholder {
   font-size: 32rpx;
-  color: #6b7280;
+  color: var(--theme-tips-color);
   text-align: center;
   padding: 80rpx 0;
   display: block;
@@ -557,7 +557,7 @@ export default {
 
 .photo-info .user-nickname {
   font-size: 26rpx;
-  color: #1f2937;
+  color: var(--theme-main-color);
   font-weight: 600;
   flex: 1;
   min-width: 0;
@@ -568,7 +568,7 @@ export default {
 
 .photo-info .photo-time {
   font-size: 22rpx;
-  color: #9ca3af;
+  color: var(--theme-light-color);
   white-space: nowrap;
   flex-shrink: 0;
 }

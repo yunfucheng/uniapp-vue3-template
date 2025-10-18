@@ -5,6 +5,8 @@
       :fixed="true"
       :placeholder="false"
       :safe-area-inset-bottom="false"
+      active-color="var(--theme-primary)"
+      inactive-color="var(--theme-tips-color)"
       @change="change1"
     >
       <up-tabbar-item
