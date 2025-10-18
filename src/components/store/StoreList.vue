@@ -39,7 +39,7 @@
             <u-tag :text="item.status" :type="item.status === '营业中' ? 'success' : 'default'" size="mini" />
           </view>
           <view class="row location">
-            <u-icon name="map" size="16" color="#64748b" />
+            <u-icon name="map" size="16" color="var(--theme-tips-color)" />
             <text class="loc-text">
               {{ item.location }}
             </text>
@@ -61,7 +61,7 @@
           <view class="actions">
             <u-button
               v-if="item.supportPhone && item.phone"
-              color="#09BE4F"
+              color="var(--theme-success)"
               shape="circle"
               @click="call(item.phone)"
             >
@@ -113,19 +113,18 @@ export default {
 <style scoped>
 .store-list { padding: 0 32rpx 32rpx 32rpx; }
 .filter-bar { margin-bottom: 16rpx; }
-.filter-title { font-size: 26rpx; color: #334155; }
+.filter-title { font-size: 26rpx; color: var(--theme-main-color); }
 .tag-list { margin-top: 12rpx; display: flex; flex-wrap: wrap; gap: 12rpx; }
 .filter-tag { margin-right: 8rpx; }
 .cards { display: flex; flex-direction: column; gap: 24rpx; }
-.card { background-color: #fff; border-radius: 16rpx; box-shadow: 0 6rpx 16rpx rgba(0,0,0,0.06); overflow: hidden; }
-.card-image { width: 100%; height: 280rpx; background-color: #f1f5f9; }
+.card { background-color: var(--theme-bg-color); border-radius: 16rpx; box-shadow: 0 6rpx 16rpx rgba(0,0,0,0.06); overflow: hidden; }
+.card-image { width: 100%; height: 280rpx; background-color: var(--theme-bg-color-secondary); }
 .card-body { padding: 16rpx; }
 .row { display: flex; align-items: center; gap: 8rpx; }
 .top-row { justify-content: space-between; margin-bottom: 8rpx; }
-.name { font-size: 30rpx; font-weight: 600; color: #111827; }
-.location { color: #64748b; font-size: 24rpx; }
-.loc-text { margin-left: 6rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
-.desc { margin: 8rpx 0 12rpx; color: #334155; font-size: 26rpx; line-height: 1.6; }
+.name { font-size: 30rpx; font-weight: 600; color: var(--theme-main-color); }
+.location { color: var(--theme-tips-color); font-size: 24rpx; }
+.desc { margin: 8rpx 0 12rpx; color: var(--theme-content-color); font-size: 26rpx; line-height: 1.6; }
 .tags { flex-wrap: wrap; gap: 8rpx; margin-bottom: 12rpx; }
 .item-tag { margin-right: 8rpx; }
 .actions { display: flex; justify-content: flex-end; }

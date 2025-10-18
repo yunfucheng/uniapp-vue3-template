@@ -15,7 +15,7 @@
       </view>
     </view>
     <view>
-      <up-float-button :is-menu="false" bottom="0px" background-color="#09BE4F" @click="onAdd" />
+      <up-float-button :is-menu="false" bottom="0px" background-color="var(--theme-success)" @click="onAdd" />
     </view>
   </view>
 </template>
@@ -55,7 +55,7 @@ export default {
 }
 
 .photo-card {
-  background-color: #ffffff;
+  background-color: var(--theme-bg-color);
   border-radius: 16rpx;
   overflow: hidden;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
@@ -64,7 +64,7 @@ export default {
 .photo-image {
   width: 100%;
   height: 380rpx;
-  background-color: #f3f4f6;
+  background-color: var(--theme-bg-color-secondary);
 }
 
 .photo-info {
@@ -83,7 +83,7 @@ export default {
 
 .user-nickname {
   font-size: 26rpx;
-  color: #1f2937;
+  color: var(--theme-main-color);
   font-weight: 600;
   flex: 1;
   min-width: 0;
@@ -94,7 +94,7 @@ export default {
 
 .photo-time {
   font-size: 22rpx;
-  color: #9ca3af;
+  color: var(--theme-light-color);
   white-space: nowrap;
   flex-shrink: 0;
 }

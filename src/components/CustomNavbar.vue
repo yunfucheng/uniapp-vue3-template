@@ -9,7 +9,7 @@
                 <text class="village-text">
                   {{ currentVillage }}
                 </text>
-                <u-icon name="arrow-down" size="12" color="#64748b" />
+                <u-icon name="arrow-down" size="12" color="var(--theme-tips-color)" />
               </view>
             </view>
           </template>
@@ -181,17 +181,17 @@ export default {
   left: 0;
   right: 0;
   z-index: 999;
-  background-color: #ffffff;
+  background-color: var(--theme-bg-color);
   box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
 }
 
 .status-bar {
-  background-color: #ffffff;
+  background-color: var(--theme-bg-color);
 }
 
 .function-nav {
-  background-color: #ffffff;
-  border-top: 1rpx solid #f1f5f9;
+  background-color: var(--theme-bg-color);
+  border-top: 1rpx solid var(--theme-border-color);
 }
 
 .function-nav-scroll {
@@ -227,7 +227,7 @@ export default {
   padding: 16rpx 24rpx;
   margin-right: 16rpx;
   border-radius: 40rpx;
-  background-color: #f9fafb;
+  background-color: var(--theme-bg-color-secondary);
   white-space: nowrap;
   flex-shrink: 0;
   min-width: fit-content;
@@ -248,7 +248,7 @@ export default {
 .function-nav-text {
   font-size: 28rpx;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--theme-tips-color);
   white-space: nowrap;
   text-align: center;
   display: inline-block;
@@ -256,7 +256,7 @@ export default {
 }
 
 .function-nav-text-active {
-  color: #22c55e;
+  color: var(--theme-success);
   font-weight: 600;
 }
 
@@ -268,11 +268,11 @@ export default {
   padding: 8rpx 16rpx;
   border-radius: 999rpx;
   background-color: rgba(34, 197, 94, 0.08);
-  border: 1rpx solid #e5e7eb;
+  border: 1rpx solid var(--theme-border-color);
 }
 
 .village-text {
   font-size: 26rpx;
-  color: #111827;
+  color: var(--theme-main-color);
 }
 </style>

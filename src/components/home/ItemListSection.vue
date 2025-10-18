@@ -101,7 +101,7 @@ export default {
 .home-section-title {
   font-size: 36rpx;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--theme-main-color);
   display: block;
 }
 
@@ -114,18 +114,18 @@ export default {
 
 .more-link {
   font-size: 26rpx;
-  color: #6b7280;
+  color: var(--theme-tips-color);
   padding: 8rpx 16rpx;
   border-radius: 16rpx;
-  background-color: #f3f4f6;
+  background-color: var(--theme-bg-color-secondary);
 }
 
 .more-link:active {
-  background-color: #e5e7eb;
+  background-color: var(--theme-border-color);
 }
 
 .item-list {
-  background-color: #ffffff;
+  background-color: var(--theme-bg-color);
   border-radius: 16rpx;
   overflow: hidden;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
@@ -135,7 +135,7 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 24rpx;
-  border-bottom: 1rpx solid #f1f5f9;
+  border-bottom: 1rpx solid var(--theme-border-color);
   transition: background-color 0.2s ease;
 }
 
@@ -144,14 +144,14 @@ export default {
 }
 
 .item-card:active {
-  background-color: #f8fafc;
+  background-color: var(--theme-bg-color-secondary);
 }
 
 .item-image {
   width: 160rpx;
   height: 160rpx;
   border-radius: 12rpx;
-  background-color: #f3f4f6;
+  background-color: var(--theme-bg-color-secondary);
   flex-shrink: 0;
 }
 
@@ -178,7 +178,7 @@ export default {
 .item-title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--theme-main-color);
   line-height: 36rpx;
   margin-bottom: 12rpx;
   display: -webkit-box;
@@ -202,16 +202,16 @@ export default {
 }
 
 .item-price.sale {
-  color: #ef4444;
+  color: var(--theme-error);
 }
 
 .item-price.purchase {
-  color: #059669;
+  color: var(--theme-success);
 }
 
 .item-location {
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--theme-tips-color);
 }
 
 .item-user-info {
@@ -224,13 +224,13 @@ export default {
   width: 32rpx;
   height: 32rpx;
   border-radius: 50%;
-  background-color: #f3f4f6;
+  background-color: var(--theme-bg-color-secondary);
   flex-shrink: 0;
 }
 
 .user-nickname {
   font-size: 24rpx;
-  color: #374151;
+  color: var(--theme-content-color);
   font-weight: 500;
   flex: 1;
   min-width: 0;
@@ -241,7 +241,7 @@ export default {
 
 .item-time {
   font-size: 22rpx;
-  color: #9ca3af;
+  color: var(--theme-light-color);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -262,7 +262,7 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #6b7280;
+  color: var(--theme-tips-color);
   font-size: 24rpx;
 }
 

@@ -3,7 +3,7 @@
     <!-- 搜索栏 -->
     <view class="filter-section">
       <view class="search-bar">
-        <u-icon name="search" size="16" color="#9ca3af" />
+        <u-icon name="search" size="16" color="var(--theme-light-color)" />
         <input
           v-model="searchKeyword"
           type="text"
@@ -23,7 +23,7 @@
             {{ item.title }}
           </text>
           <view v-if="item.audioUrl" class="audio-btn" @tap.stop="playAudio(item)">
-            <u-icon name="volume" size="16" color="#22c55e" />
+            <u-icon name="volume" size="16" color="var(--theme-success)" />
           </view>
         </view>
 
@@ -42,7 +42,7 @@
                 {{ item.type === 0 ? '通知' : '公告' }}
               </text>
             </view>
-            <view class="level-badge" :style="{ backgroundColor: `${getLevelColor(item.adminLevel)}15` }">
+            <view class="level-badge" :style="{ borderColor: getLevelColor(item.adminLevel) }">
               <text class="level-text" :style="{ color: getLevelColor(item.adminLevel) }">
                 {{ getLevelText(item.adminLevel) }}
               </text>
@@ -50,10 +50,10 @@
           </view>
           <view class="footer-right">
             <view class="action-btn-small" @tap="editAnnouncement(item)">
-              <u-icon name="edit-pen" size="14" color="#3b82f6" />
+              <u-icon name="edit-pen" size="14" color="var(--theme-primary)" />
             </view>
             <view class="action-btn-small" @tap="deleteAnnouncement(item.id)">
-              <u-icon name="trash" size="14" color="#ef4444" />
+              <u-icon name="trash" size="14" color="var(--theme-error)" />
             </view>
             <text class="item-time">
               {{ item.createTimeFomat }}
@@ -65,7 +65,7 @@
 
     <!-- 空状态 -->
     <view v-if="filteredAnnouncements.length === 0" class="empty-state">
-      <u-icon name="info" size="48" color="#d1d5db" />
+      <u-icon name="info" size="48" color="var(--theme-disabled-color)" />
       <text class="empty-title">
         暂无公告
       </text>
@@ -75,7 +75,7 @@
     </view>
 
     <view>
-      <up-float-button :is-menu="false" background-color="#09BE4F" @click="publishAnnouncement" />
+      <up-float-button :is-menu="false" background-color="var(--theme-success)" @click="publishAnnouncement" />
     </view>
   </view>
 </template>
@@ -190,11 +190,11 @@ export default {
     // 获取管理级别颜色
     getLevelColor(adminLevel) {
       const colorMap = {
-        0: '#F59E0B', // 屯 - 黄色
-        1: '#DC2626', // 村 - 红色
-        2: '#3B82F6', // 乡 - 蓝色
+        0: 'var(--theme-warning)',
+        1: 'var(--theme-error)',
+        2: 'var(--theme-primary)',
       };
-      return colorMap[adminLevel] || '#DC2626';
+      return colorMap[adminLevel] || 'var(--theme-error)';
     },
 
   },
@@ -209,7 +209,7 @@ export default {
 
 /* 公告管理页面样式 */
 .announcement-header {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-dark));
   margin: 0 -32rpx 32rpx -32rpx;
   padding: 32rpx;
   color: white;
@@ -250,12 +250,12 @@ export default {
 }
 
 .action-btn.primary {
-  background-color: #ffffff;
-  color: #3b82f6;
+  background-color: var(--theme-bg-color);
+  color: var(--theme-primary);
 }
 
 .action-btn.primary:active {
-  background-color: #f1f5f9;
+  background-color: var(--theme-bg-color-secondary);
 }
 
 .action-btn.secondary {
@@ -281,7 +281,7 @@ export default {
 
 .stat-card {
   flex: 1;
-  background-color: #ffffff;
+  background-color: var(--theme-bg-color);
   border-radius: 16rpx;
   padding: 24rpx;
   text-align: center;
@@ -291,14 +291,14 @@ export default {
 .stat-number {
   font-size: 48rpx;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--theme-main-color);
   display: block;
   margin-bottom: 8rpx;
 }
 
 .stat-label {
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--theme-tips-color);
   display: block;
 }
 
@@ -310,7 +310,7 @@ export default {
 .search-bar {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--theme-bg-color);
   border-radius: 16rpx;
   padding: 20rpx 24rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
@@ -323,7 +323,7 @@ export default {
 .search-input {
   flex: 1;
   font-size: 28rpx;
-  color: #374151;
+  color: var(--theme-content-color);
   border: none;
   outline: none;
 }
@@ -334,7 +334,7 @@ export default {
 }
 
 .announcement-card {
-  background-color: #ffffff;
+  background-color: var(--theme-bg-color);
   border-radius: 16rpx;
   padding: 24rpx;
   margin-bottom: 16rpx;
@@ -358,7 +358,7 @@ export default {
 .card-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--theme-main-color);
   flex: 1;
   margin-right: 16rpx;
   overflow: hidden;
@@ -394,7 +394,7 @@ export default {
 
 .card-text {
   font-size: 26rpx;
-  color: #6b7280;
+  color: var(--theme-tips-color);
   line-height: 36rpx;
   overflow: hidden;
   white-space: nowrap;
@@ -436,13 +436,13 @@ export default {
 }
 
 .notification-badge {
-  background-color: rgba(220, 38, 38, 0.1);
-  color: #dc2626;
+  background-color: var(--theme-bg-color-secondary);
+  color: var(--theme-error);
 }
 
 .announcement-badge {
-  background-color: rgba(5, 150, 105, 0.1);
-  color: #059669;
+  background-color: var(--theme-bg-color-secondary);
+  color: var(--theme-success);
 }
 
 .badge-text {
@@ -457,6 +457,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1rpx solid transparent;
 }
 
 .level-text {
@@ -471,7 +472,7 @@ export default {
   width: 32rpx;
   height: 32rpx;
   border-radius: 6rpx;
-  background-color: #f3f4f6;
+  background-color: var(--theme-bg-color-secondary);
   transition: all 0.2s ease;
   margin-right: 8rpx;
 }
@@ -482,7 +483,7 @@ export default {
 
 .item-time {
   font-size: 22rpx;
-  color: #9ca3af;
+  color: var(--theme-light-color);
   white-space: nowrap;
 }
 
@@ -499,14 +500,14 @@ export default {
 .empty-title {
   font-size: 36rpx;
   font-weight: 600;
-  color: #9ca3af;
+  color: var(--theme-light-color);
   margin: 24rpx 0 12rpx;
   display: block;
 }
 
 .empty-subtitle {
   font-size: 26rpx;
-  color: #d1d5db;
+  color: var(--theme-disabled-color);
   margin-bottom: 40rpx;
   display: block;
 }

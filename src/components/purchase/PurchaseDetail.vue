@@ -48,7 +48,7 @@
       <u-button class="fav-btn" type="info" plain shape="circle" @click="onFav">
         收藏
       </u-button>
-      <u-button class="contact-btn" color="#09BE4F" shape="circle" @click="onContact">
+      <u-button class="contact-btn" color="var(--theme-success)" shape="circle" @click="onContact">
         联系收购方
       </u-button>
     </view>
@@ -80,23 +80,23 @@ export default {
 </script>
 
 <style scoped>
-.purchase-detail { margin: 24rpx; background:#fff; border-radius: 16rpx; overflow:hidden; box-shadow:0 4rpx 12rpx rgba(0,0,0,0.06); }
+.purchase-detail { margin: 24rpx; background: var(--theme-bg-color); border-radius: 16rpx; overflow:hidden; box-shadow:0 4rpx 12rpx rgba(0,0,0,0.06); }
 .user-row { display:flex; align-items:center; gap: 16rpx; padding: 24rpx; }
-.avatar { width:64rpx; height:64rpx; border-radius:50%; background:#f3f4f6; flex-shrink:0; }
+.avatar { width:64rpx; height:64rpx; border-radius:50%; background: var(--theme-bg-color-secondary); flex-shrink:0; }
 .user-meta { flex:1; display:flex; flex-direction:column; }
-.nickname { font-size: 28rpx; color:#111827; font-weight:600; }
+.nickname { font-size: 28rpx; color: var(--theme-main-color); font-weight:600; }
 .meta-line { display:flex; align-items:center; gap: 8rpx; margin-top: 6rpx; }
-.location { font-size: 24rpx; color:#6b7280; }
-.dot { color:#9ca3af; }
-.time { font-size: 24rpx; color:#9ca3af; }
-.hero-image { width:100%; height: 420rpx; background:#f3f4f6; }
+.location { font-size: 24rpx; color: var(--theme-tips-color); }
+.dot { color: var(--theme-light-color); }
+.time { font-size: 24rpx; color: var(--theme-light-color); }
+.hero-image { width:100%; height: 420rpx; background: var(--theme-bg-color-secondary); }
 .title-price { display:flex; align-items:center; justify-content:space-between; padding: 24rpx; }
-.title { font-size: 30rpx; color:#1f2937; font-weight:600; flex:1; padding-right: 16rpx; }
-.price { font-size: 36rpx; color:#059669; font-weight:700; }
+.title { font-size: 30rpx; color: var(--theme-main-color); font-weight:600; flex:1; padding-right: 16rpx; }
+.price { font-size: 36rpx; color: var(--theme-success); font-weight:700; }
 .desc { padding: 0 24rpx 24rpx 24rpx; }
-.desc-text { font-size: 28rpx; color:#1f2937; line-height: 1.6; }
+.desc-text { font-size: 28rpx; color: var(--theme-main-color); line-height: 1.6; }
 
-.bottom-actions { display:flex; gap: 16rpx; padding: 24rpx; border-top:1px solid #f3f4f6; }
+.bottom-actions { display:flex; gap: 16rpx; padding: 24rpx; border-top:1px solid var(--theme-border-color); }
 .fav-btn { flex: 1; }
 .contact-btn { flex: 2; }
 </style>
