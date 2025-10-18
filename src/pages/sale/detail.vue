@@ -43,7 +43,7 @@ export default {
 </script>
 
 <style scoped>
-.sale-detail-page { background-color: #f8fafc; height: 100vh; display:flex; flex-direction:column; }
+.sale-detail-page { background-color: var(--theme-bg-color-secondary); height: 100vh; display:flex; flex-direction:column; }
 .content-scroll { height: 100vh; padding-top: calc(88rpx + var(--status-bar-height)); }
-.empty { margin: 40rpx; text-align:center; color:#6b7280; }
+.empty { margin: 40rpx; text-align:center; color: var(--theme-tips-color); }
 </style>

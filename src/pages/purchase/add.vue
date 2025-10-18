@@ -32,7 +32,7 @@
             <text class="selector-value">
               {{ visibleScope }}
             </text>
-            <u-icon name="arrow-right" size="16" color="#9ca3af" />
+            <u-icon name="arrow-right" size="16" color="var(--theme-light-color)" />
           </view>
         </view>
         <u-divider />
@@ -45,7 +45,7 @@
             <text class="selector-value">
               {{ endTimeText }}
             </text>
-            <u-icon name="arrow-right" size="16" color="#9ca3af" />
+            <u-icon name="arrow-right" size="16" color="var(--theme-light-color)" />
           </view>
         </view>
         <u-divider />
@@ -105,11 +105,11 @@ export default {
 </script>
 
 <style scoped>
-.add-purchase-page { background-color: #f8fafc; height: 100vh; display:flex; flex-direction:column; }
+.add-purchase-page { background-color: var(--theme-bg-color-secondary); height: 100vh; display:flex; flex-direction:column; }
 .content-scroll { height: 100vh; padding-top: calc(88rpx + var(--status-bar-height)); }
 
 .selector-row { padding: 24rpx; display:flex; align-items:center; justify-content:space-between; }
-.selector-label { font-size: 28rpx; color: #4b5563; }
+.selector-label { font-size: 28rpx; color: var(--theme-tips-color); }
 .selector-right { display:flex; align-items:center; gap: 12rpx; }
-.selector-value { font-size: 28rpx; color: #1f2937; }
+.selector-value { font-size: 28rpx; color: var(--theme-main-color); }
 </style>

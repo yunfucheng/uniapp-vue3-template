@@ -4,7 +4,7 @@
     <view class="custom-navbar">
       <view class="navbar-content">
         <view class="navbar-left" @tap="goBack">
-          <u-icon name="arrow-left" size="20" color="#1f2937" />
+          <u-icon name="arrow-left" size="20" color="var(--theme-main-color)" />
         </view>
         <view class="navbar-title">
           <text class="title-text">
@@ -49,12 +49,12 @@ export default {
 </script>
 
 <style scoped>
-.sale-page { height: 100vh; background-color: #f9fafb; }
+.sale-page { height: 100vh; background-color: var(--theme-bg-color-secondary); }
 .custom-navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background-color: #ffffff; }
 .navbar-content { display: flex; align-items: center; justify-content: space-between; padding: 16rpx 24rpx; }
 .navbar-left, .navbar-right { width: 80rpx; display:flex; align-items:center; justify-content:center; }
 .navbar-title { flex: 1; display:flex; align-items:center; justify-content:center; }
-.title-text { font-size: 32rpx; font-weight: 600; color: #1f2937; }
+.title-text { font-size: 32rpx; font-weight: 600; color: var(--theme-main-color); }
 
 .content-scroll { height: 100vh; padding-top: 100rpx; }
 .section-content { min-height: 100%; padding-bottom: 40rpx; }

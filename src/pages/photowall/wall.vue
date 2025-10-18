@@ -63,16 +63,7 @@ export default {
   margin-bottom: 16rpx;
 }
 
-.title {
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #1f2937;
-}
+.title { font-size: 36rpx; font-weight: 700; color: var(--theme-main-color); }
 
-.subtitle {
-  display: block;
-  margin-top: 8rpx;
-  font-size: 24rpx;
-  color: #6b7280;
-}
+.subtitle { display: block; margin-top: 8rpx; font-size: 24rpx; color: var(--theme-tips-color); }
 </style>

@@ -90,12 +90,12 @@ export default {
 </script>
 
 <style scoped>
-.add-photo-page { background-color: #f8fafc; height: 100vh; display:flex; flex-direction:column; }
+.add-photo-page { background-color: var(--theme-bg-color-secondary); height: 100vh; display:flex; flex-direction:column; }
 
 .title-text {
   font-size: 34rpx;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--theme-main-color);
 }
 
 .action-text {
@@ -113,6 +113,6 @@ export default {
 .hint {
   margin-top: 16rpx;
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--theme-tips-color);
 }
 </style>

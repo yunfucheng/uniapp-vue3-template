@@ -352,20 +352,17 @@ export default {
 </script>
 
 <style scoped>
-.calendar-detail-container {
-  min-height: 100vh;
-  background-color: #f6f3ec;
-}
+.calendar-detail-container { min-height: 100vh; background-color: var(--theme-bg-color-secondary); }
 
 /* 顶部导航栏 */
 .navigation-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 44px 16px 16px 16px; /* 适配状态栏 */
-  background: rgba(0, 0, 0, 0.1);
+  padding: 44px 16px 16px 16px; background: var(--theme-primary-15); backdrop-filter: blur(10px); border-bottom: 1px solid var(--theme-divider-color); }
+  background: var(--theme-primary-15);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--theme-divider-color);
 }
 
 .nav-back-icon {
@@ -380,9 +377,7 @@ export default {
 .nav-title {
   font-size: 18px;
   font-weight: bold;
-  color: #333;
-  text-align: center;
-  position: absolute;
+  color: var(--theme-main-color); text-align: center; position: absolute; left: 50%; transform: translateX(-50%); }
   left: 50%;
   transform: translateX(-50%);
 }
@@ -398,16 +393,16 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--theme-primary-08);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--theme-divider-color);
 }
 
 .date-nav-btn {
   width: 44px;
   height: 44px;
   border-radius: 22px;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--theme-primary-15); border: none; display: flex; align-items: center; justify-content: center; font-size: 0; padding: 0; }
   border: none;
   display: flex;
   align-items: center;
@@ -418,14 +413,12 @@ export default {
 
 .nav-icon {
   font-size: 24px;
-  color: #333;
-  font-weight: bold;
-  line-height: 1;
+  color: var(--theme-main-color); font-weight: bold; line-height: 1;
 }
 
 .date-display {
   text-align: center;
-  color: #333;
+  color: var(--theme-main-color);
 }
 
 .date-text {
@@ -480,82 +473,18 @@ export default {
   min-width: 0; /* 允许文本截断 */
 }
 
-.date-detail {
-  font-size: 20px;
-  color: #333;
-  font-weight: 500;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.lunar-date {
-  font-size: 16px;
-  color: #666;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.year-tips {
-  font-size: 16px;
-  color: #999;
-  display: block;
-}
-
-.date-meta {
-  display: flex;
-  justify-content: space-around;
-  border-top: 1px solid #f0f0f0;
-  padding-top: 20px;
-  margin-bottom: 20px;
-}
-
-.meta-item {
-  text-align: center;
-  flex: 1;
-}
-
-.meta-label {
-  font-size: 14px;
-  color: #999;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.meta-value {
-  font-size: 16px;
-  color: #333;
-  font-weight: 500;
-  display: block;
-}
-
+.date-detail { font-size: 20px; color: var(--theme-main-color); font-weight: 500; display: block; margin-bottom: 6px; }
+.lunar-date { font-size: 16px; color: var(--theme-light-color); display: block; margin-bottom: 6px; }
+.year-tips { font-size: 16px; color: var(--theme-tips-color); display: block; }
+.date-meta { display: flex; justify-content: space-around; border-top: 1px solid var(--theme-divider-color); padding-top: 20px; margin-bottom: 20px; }
+.meta-item { text-align: center; flex: 1; }
+.meta-label { font-size: 14px; color: var(--theme-tips-color); display: block; margin-bottom: 6px; }
+.meta-value { font-size: 16px; color: var(--theme-main-color); font-weight: 500; display: block; }
 /* 分割线 */
-.divider-line {
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 20px 0;
-}
-
+.divider-line { height: 1px; background-color: var(--theme-divider-color); margin: 20px 0; }
 /* 日期信息一行 */
-.date-info-row {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.info-item {
-  font-size: 13px;
-  color: #333;
-  font-weight: 500;
-  padding: 8px 12px;
-  background: #f8f9fa;
-  border-radius: 20px;
-  text-align: center;
-  flex: 1;
-  min-width: 80px;
-}
-
+.date-info-row { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 8px; }
+.info-item { font-size: 13px; color: var(--theme-main-color); font-weight: 500; padding: 8px 12px; background: var(--theme-bg-color-secondary); border-radius: 20px; text-align: center; flex: 1; min-width: 80px; }
 /* 通用卡片样式 */
 .suit-card, .avoid-card {
   background: white;
@@ -572,15 +501,15 @@ export default {
 .card-title {
   font-size: 20px;
   font-weight: bold;
-  color: #333;
+  color: var(--theme-main-color);
 }
 
 .good-title {
-  color: #4CAF50;
+  color: var(--theme-success);
 }
 
 .bad-title {
-  color: #f44336;
+  color: var(--theme-error);
 }
 
 /* 宜忌事项 */
@@ -597,12 +526,14 @@ export default {
 }
 
 .good-tag {
+  background: var(--theme-success-12); color: var(--theme-success); border: 1px solid var(--theme-success-20); }
   background: #e8f5e8;
   color: #4CAF50;
   border: 1px solid #c8e6c9;
 }
 
 .bad-tag {
+  background: var(--theme-error-12); color: var(--theme-error); border: 1px solid var(--theme-error-20); }
   background: #ffeaea;
   color: #f44336;
   border: 1px solid #ffcdd2;
@@ -640,23 +571,24 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--theme-divider-color);
 }
 
 .picker-title {
   font-size: 18px;
   font-weight: bold;
-  color: #333;
+  color: var(--theme-main-color);
 }
 
 .picker-close {
   width: 32px;
   height: 32px;
   border-radius: 16px;
-  background: #f0f0f0;
+  background: var(--theme-primary-08); border: none; font-size: 20px; color: var(--theme-light-color); display: flex; align-items: center; justify-content: center; }
+  background: var(--theme-primary-08);
   border: none;
   font-size: 20px;
-  color: #666;
+  color: var(--theme-light-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -690,8 +622,9 @@ export default {
 }
 
 .cancel-btn {
-  background: #f0f0f0;
-  color: #666;
+  background: var(--theme-primary-08); color: var(--theme-light-color); }
+  background: var(--theme-primary-08);
+  color: var(--theme-light-color);
 }
 
 .confirm-btn {

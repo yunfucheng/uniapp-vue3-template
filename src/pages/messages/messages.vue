@@ -5,7 +5,7 @@
       <u-navbar title="消息中心" placeholder>
         <template #left />
         <template #right>
-          <u-icon name="trash" size="20" color="#64748b" />
+          <u-icon name="trash" size="20" color="var(--theme-tips-color)" />
         </template>
       </u-navbar>
     </view>
@@ -95,7 +95,7 @@ export default {
 <style scoped>
 .messages-page {
   height: 100vh;
-  background-color: #f9fafb;
+  background-color: var(--theme-bg-color-secondary);
   padding-top: 100rpx;
 }
 
@@ -132,19 +132,19 @@ export default {
 }
 
 .bg-gray-50 {
-  background-color: #f9fafb;
+  background-color: var(--theme-bg-color-secondary);
 }
 
 .text-gray-800 {
-  color: #1f2937;
+  color: var(--theme-main-color);
 }
 
 .text-gray-700 {
-  color: #374151;
+  color: var(--theme-main-color);
 }
 
 .text-gray-400 {
-  color: #9ca3af;
+  color: var(--theme-light-color);
 }
 
 .bg-white {
@@ -156,7 +156,7 @@ export default {
 }
 
 .border-gray-200 {
-  border-color: #e5e7eb;
+  border-color: var(--theme-divider-color);
 }
 
 .rounded-lg {
@@ -220,12 +220,12 @@ export default {
 }
 
 .divider {
-  border-top: 2rpx solid #e5e7eb;
+  border-top: 2rpx solid var(--theme-divider-color);
   margin: 8rpx 0 12rpx;
 }
 
 .row-sep {
-  border-top: 2rpx solid #e5e7eb;
+  border-top: 2rpx solid var(--theme-divider-color);
   margin-top: 12rpx;
   margin-left: 0;
 }

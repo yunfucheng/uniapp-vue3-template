@@ -4,7 +4,7 @@
     <view class="custom-navbar">
       <view class="navbar-content">
         <view class="navbar-left" @tap="goBack">
-          <u-icon name="arrow-left" size="20" color="#1f2937" />
+          <u-icon name="arrow-left" size="20" color="var(--theme-main-color)" />
         </view>
         <view class="navbar-title">
           <text class="title-text">
@@ -35,7 +35,7 @@
               <u-icon
                 :name="announcementData.type === 0 ? 'bell' : 'volume'"
                 size="14"
-                :color="announcementData.type === 0 ? '#dc2626' : '#22c55e'"
+                :color="announcementData.type === 0 ? 'var(--theme-error)' : 'var(--theme-success)'"
               />
               <text class="badge-text">
                 {{ announcementData.type === 0 ? '通知' : '公告' }}
@@ -274,7 +274,7 @@ export default {
 <style scoped>
 .announcement-detail {
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: var(--theme-bg-color-secondary);
 }
 
 /* 自定义导航栏 */
@@ -285,7 +285,7 @@ export default {
   right: 0;
   z-index: 1000;
   background-color: #ffffff;
-  border-bottom: 1rpx solid #e5e7eb;
+  border-bottom: 1px solid var(--theme-divider-color);
 }
 
 .navbar-content {
@@ -307,8 +307,9 @@ export default {
 }
 
 .navbar-left:active {
-  background-color: #f3f4f6;
+  background-color: var(--theme-primary-08);
   border-radius: 50%;
+}
 }
 
 .navbar-title {
@@ -316,11 +317,7 @@ export default {
   text-align: center;
 }
 
-.title-text {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #1f2937;
-}
+.title-text { font-size: 32rpx; font-weight: 600; color: var(--theme-main-color); }
 
 /* 内容滚动区域 */
 .content-scroll {
@@ -337,13 +334,7 @@ export default {
   margin-bottom: 24rpx;
 }
 
-.announcement-title {
-  font-size: 40rpx;
-  font-weight: 700;
-  color: #1f2937;
-  line-height: 56rpx;
-  display: block;
-}
+.announcement-title { font-size: 40rpx; font-weight: 700; color: var(--theme-main-color); line-height: 56rpx; display: block; }
 
 /* 信息栏 */
 .info-section {
@@ -368,13 +359,13 @@ export default {
 }
 
 .notification-badge {
-  background-color: rgba(220, 38, 38, 0.1);
-  color: #dc2626;
+  background-color: var(--theme-error-12);
+  color: var(--theme-error);
 }
 
 .announcement-badge {
-  background-color: rgba(34, 197, 94, 0.1);
-  color: #22c55e;
+  background-color: var(--theme-success-12);
+  color: var(--theme-success);
 }
 
 .badge-text {
@@ -394,14 +385,14 @@ export default {
 
 .publish-time {
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--theme-tips-color);
   margin-left: auto;
 }
 
 /* 分割线 */
 .divider {
   height: 1rpx;
-  background-color: #e5e7eb;
+  background-color: var(--theme-divider-color);
   margin: 32rpx 0;
 }
 
@@ -451,7 +442,7 @@ export default {
 .audio-label {
   font-size: 28rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--theme-main-color);
   display: block;
   margin-bottom: 12rpx;
 }
@@ -465,7 +456,7 @@ export default {
 .progress-bar {
   flex: 1;
   height: 6rpx;
-  background-color: #e5e7eb;
+  background-color: var(--theme-divider-color);
   border-radius: 3rpx;
   overflow: hidden;
 }
@@ -479,7 +470,7 @@ export default {
 
 .time-text {
   font-size: 22rpx;
-  color: #6b7280;
+  color: var(--theme-light-color);
   white-space: nowrap;
   min-width: 80rpx;
 }
@@ -492,7 +483,7 @@ export default {
 .content-text {
   font-size: 30rpx;
   line-height: 48rpx;
-  color: #374151;
+  color: var(--theme-main-color);
   display: block;
   text-align: justify;
 }
@@ -511,7 +502,7 @@ export default {
 .image-item {
   border-radius: 12rpx;
   overflow: hidden;
-  background-color: #f3f4f6;
+  background-color: var(--theme-bg-color-secondary);
 }
 
 .content-image {
