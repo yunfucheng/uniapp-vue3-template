@@ -359,7 +359,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 44px 16px 16px 16px; background: var(--theme-primary-15); backdrop-filter: blur(10px); border-bottom: 1px solid var(--theme-divider-color); }
+  padding: 44px 16px 16px 16px;
   background: var(--theme-primary-15);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--theme-divider-color);
@@ -377,7 +377,9 @@ export default {
 .nav-title {
   font-size: 18px;
   font-weight: bold;
-  color: var(--theme-main-color); text-align: center; position: absolute; left: 50%; transform: translateX(-50%); }
+  color: var(--theme-main-color);
+  text-align: center;
+  position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -402,7 +404,7 @@ export default {
   width: 44px;
   height: 44px;
   border-radius: 22px;
-  background: var(--theme-primary-15); border: none; display: flex; align-items: center; justify-content: center; font-size: 0; padding: 0; }
+  background: var(--theme-primary-15);
   border: none;
   display: flex;
   align-items: center;
@@ -526,17 +528,15 @@ export default {
 }
 
 .good-tag {
-  background: var(--theme-success-12); color: var(--theme-success); border: 1px solid var(--theme-success-20); }
-  background: #e8f5e8;
-  color: #4CAF50;
-  border: 1px solid #c8e6c9;
+  background: var(--theme-success-12);
+  color: var(--theme-success);
+  border: 1px solid var(--theme-success-20);
 }
 
 .bad-tag {
-  background: var(--theme-error-12); color: var(--theme-error); border: 1px solid var(--theme-error-20); }
-  background: #ffeaea;
-  color: #f44336;
-  border: 1px solid #ffcdd2;
+  background: var(--theme-error-12);
+  color: var(--theme-error);
+  border: 1px solid var(--theme-error-20);
 }
 
 .item-text {
@@ -584,7 +584,6 @@ export default {
   width: 32px;
   height: 32px;
   border-radius: 16px;
-  background: var(--theme-primary-08); border: none; font-size: 20px; color: var(--theme-light-color); display: flex; align-items: center; justify-content: center; }
   background: var(--theme-primary-08);
   border: none;
   font-size: 20px;
@@ -622,7 +621,6 @@ export default {
 }
 
 .cancel-btn {
-  background: var(--theme-primary-08); color: var(--theme-light-color); }
   background: var(--theme-primary-08);
   color: var(--theme-light-color);
 }

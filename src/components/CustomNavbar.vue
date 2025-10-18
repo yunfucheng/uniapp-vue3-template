@@ -189,10 +189,7 @@ export default {
   background-color: var(--theme-bg-color);
 }
 
-.function-nav {
-  background-color: var(--theme-bg-color);
-  border-top: 1rpx solid var(--theme-border-color);
-}
+
 
 .function-nav-scroll {
   white-space: nowrap;
@@ -226,14 +223,15 @@ export default {
   justify-content: center;
   padding: 16rpx 24rpx;
   margin-right: 16rpx;
-  border-radius: 40rpx;
-  background-color: var(--theme-bg-color-secondary);
+  border-radius: 20rpx;
+  background-color: var(--theme-bg-color);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04);
   white-space: nowrap;
   flex-shrink: 0;
   min-width: fit-content;
-  height: 52rpx;
+  height: 56rpx;
   box-sizing: border-box;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .function-nav-item:last-child {
@@ -241,14 +239,16 @@ export default {
 }
 
 .function-nav-item-active {
-  background-color: var(--theme-primary-15);
-  transform: scale(1.05);
+  background-color: var(--theme-primary);
+  border-color: transparent;
+  box-shadow: 0 6rpx 12rpx rgba(17, 24, 39, 0.15);
+  transform: none;
 }
 
 .function-nav-text {
   font-size: 28rpx;
   font-weight: 500;
-  color: var(--theme-tips-color);
+  color: var(--theme-content-color);
   white-space: nowrap;
   text-align: center;
   display: inline-block;
@@ -256,7 +256,7 @@ export default {
 }
 
 .function-nav-text-active {
-  color: var(--theme-success);
+  color: #ffffff;
   font-weight: 600;
 }
 

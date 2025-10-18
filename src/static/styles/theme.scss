@@ -2,46 +2,46 @@
 :root,
 page {
   // 主色调
-  --theme-primary: #21d59d;
-  --theme-primary-dark: #18b483;
-  --theme-success: #3ed268;
-  --theme-warning: #fe9831;
-  --theme-error: #fa4e62;
-  --theme-primary-08: rgba(33, 213, 157, 0.08);
-  --theme-primary-15: rgba(33, 213, 157, 0.15);
-  --theme-success-12: rgba(62, 210, 104, 0.12);
-  --theme-success-20: rgba(62, 210, 104, 0.20);
-  --theme-error-12: rgba(250, 78, 98, 0.12);
-  --theme-error-20: rgba(250, 78, 98, 0.20);
+  --theme-primary: #333333;
+  --theme-primary-dark: #0f172a;
+  --theme-success: #10b981;
+  --theme-warning: #f59e0b;
+  --theme-error: #ef4444;
+  --theme-primary-08: rgba(17, 24, 39, 0.08);
+  --theme-primary-15: rgba(17, 24, 39, 0.15);
+  --theme-success-12: rgba(16, 185, 129, 0.12);
+  --theme-success-20: rgba(16, 185, 129, 0.20);
+  --theme-error-12: rgba(239, 68, 68, 0.12);
+  --theme-error-20: rgba(239, 68, 68, 0.20);
 
   // 文字颜色
-  --theme-main-color: #1b233b;
-  --theme-content-color: #60687e;
-  --theme-tips-color: #7e869a;
-  --theme-light-color: #bdc3d2;
-  --theme-disabled-color: #dce0eb;
+  --theme-main-color: #1a1a1a;
+  --theme-content-color: #aaaaaa;
+  --theme-tips-color: #9ca3af;
+  --theme-light-color: #d1d5db;
+  --theme-disabled-color: #e5e7eb;
 
   // 背景颜色
   --theme-bg-color: #ffffff;
-  --theme-bg-color-secondary: #f8f9fa;
+  --theme-bg-color-secondary: #f7f7f9;
 
   // 边框颜色
-  --theme-border-color: #e9ecef;
+  --theme-border-color: #e5e7eb;
 }
 
 .theme-dark {
   // 主色调
-  --theme-primary: #3c9cff;
-  --theme-primary-dark: #3478e5;
-  --theme-success: #5ac725;
-  --theme-warning: #f9ae3d;
-  --theme-error: #f56c6c;
-  --theme-primary-08: rgba(60, 156, 255, 0.08);
-  --theme-primary-15: rgba(60, 156, 255, 0.15);
-  --theme-success-12: rgba(90, 199, 37, 0.12);
-  --theme-success-20: rgba(90, 199, 37, 0.20);
-  --theme-error-12: rgba(245, 108, 108, 0.12);
-  --theme-error-20: rgba(245, 108, 108, 0.20);
+  --theme-primary: #9ca3af;
+  --theme-primary-dark: #6b7280;
+  --theme-success: #22c55e;
+  --theme-warning: #f59e0b;
+  --theme-error: #ef4444;
+  --theme-primary-08: rgba(156, 163, 175, 0.08);
+  --theme-primary-15: rgba(156, 163, 175, 0.15);
+  --theme-success-12: rgba(34, 197, 94, 0.12);
+  --theme-success-20: rgba(34, 197, 94, 0.20);
+  --theme-error-12: rgba(239, 68, 68, 0.12);
+  --theme-error-20: rgba(239, 68, 68, 0.20);
 
   // 文字颜色
   --theme-main-color: #ffffff;
@@ -51,8 +51,11 @@ page {
   --theme-disabled-color: #495057;
 
   // 背景颜色
-  --theme-bg-color: #1a1a1a;
-  --theme-bg-color-secondary: #2d2d2d;
+  --theme-bg-color: #121212;
+  --theme-bg-color-secondary: #1f1f1f;
+
+  // 边框颜色
+  --theme-border-color: #2e2e2e;
 }
 
 // 主题工具类

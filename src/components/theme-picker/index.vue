@@ -17,8 +17,8 @@ import { useAppStore } from '@/store';
 const appStore = useAppStore();
 
 const colors = [
-  { name: 'light', color: '#21d59d' },
-  { name: 'dark', color: '#3c9cff' },
+  { name: 'light', color: '#111827' },
+  { name: 'dark', color: '#121212' },
   { name: 'auto', color: '#888888' },
 ];
 
