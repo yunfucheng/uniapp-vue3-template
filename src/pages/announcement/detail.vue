@@ -140,8 +140,8 @@ export default {
         createTimeFomat: '2小时前',
         audioUrl: 'https://res.gsmba.net/ETraining/Files/Audio/8e08930b-6b5b-4a8e-bf86-47decd39c967.mp3',
         images: [
-          'http://t2k8c3tkq.hn-bkt.clouddn.com/Banner/ww01.jpg',
-          'http://t2k8c3tkq.hn-bkt.clouddn.com/Banner/ww02.jpg',
+          'http://src.wwen.cc/Banner/ww01.jpg',
+          'http://src.wwen.cc/Banner/ww02.jpg',
         ],
       },
     };

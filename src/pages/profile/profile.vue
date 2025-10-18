@@ -5,7 +5,7 @@
 
     <!-- 个人信息块 -->
     <view class="card mt-2 flex items-center gap-3 p-3">
-      <up-image class="avatar" src="http://t2k8c3tkq.hn-bkt.clouddn.com/Avatar/avatar004.jpg" mode="aspectFill"
+      <up-image class="avatar" src="http://src.wwen.cc/Avatar/avatar004.jpg" mode="aspectFill"
         width="72px" height="72px" shape="square" radius="20px" />
       <view class="flex flex-1 flex-col">
         <view class="flex items-center gap-2">

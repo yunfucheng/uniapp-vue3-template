@@ -6,12 +6,12 @@
 export const bannerData = {
   banners: [
     {
-      imageUrl: 'http://t2k8c3tkq.hn-bkt.clouddn.com/Banner/ww01.jpg',
+      imageUrl: 'http://src.wwen.cc/Banner/ww01.jpg',
       title: '乌翁苗寨',
       describe: '乌翁欢迎您，欢迎来到乌翁苗寨。',
     },
     {
-      imageUrl: 'http://t2k8c3tkq.hn-bkt.clouddn.com/Banner/ww02.jpg',
+      imageUrl: 'http://src.wwen.cc/Banner/ww02.jpg',
       title: '乌翁角落',
       describe: '',
     },

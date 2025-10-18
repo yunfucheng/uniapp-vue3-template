@@ -302,12 +302,12 @@ export default {
         console.error('加载 Banner 数据失败:', error);
         this.banners = [
           {
-            imageUrl: 'http://t2k8c3tkq.hn-bkt.clouddn.com/Banner/ww01.jpg',
+            imageUrl: 'http://src.wwen.cc/Banner/ww01.jpg',
             title: '乌翁正面',
             describe: '乌翁是一个美丽的乡村',
           },
           {
-            imageUrl: 'http://t2k8c3tkq.hn-bkt.clouddn.com/Banner/ww02.jpg',
+            imageUrl: 'http://src.wwen.cc/Banner/ww02.jpg',
             title: '乌翁角落',
             describe: '',
           },
