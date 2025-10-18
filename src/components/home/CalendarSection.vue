@@ -70,17 +70,9 @@ export default {
   align-items: center;
 }
 
-.calendar-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333333;
-  margin-bottom: 8rpx;
-  display: block;
-}
-
 .calendar-date {
   font-size: 28rpx;
-  color: #333333;
+  color: var(--theme-primary-color);
 }
 
 .calendar-right {
