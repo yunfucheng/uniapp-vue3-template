@@ -75,8 +75,8 @@
               >
                 <u-icon
                   :name="currentPlayingId === announcement.id ? 'volume-fill' : 'volume'"
-                  size="24"
-                  color="#22c55e"
+                  size="20"
+                  color="#aaaaaa"
                 />
               </view>
             </view>

@@ -2,9 +2,6 @@
   <view class="calendar-section" @tap="showCalendar">
     <view class="calendar-content">
       <view class="calendar-left">
-        <text class="calendar-title">
-          今日黄历
-        </text>
         <text class="calendar-date">
           农历 {{ calendarData.lunarCalendar || '七月十二' }} · {{ calendarData.yearTips || '乙巳' }}年
         </text>
@@ -61,11 +58,10 @@ export default {
 
 <style scoped>
 .calendar-section {
-  background-color: #fff8e1;
+  background-color: #f7f7f9;
   margin: 0 32rpx 32rpx;
   border-radius: 24rpx;
   padding: 20rpx;
-  border: 2rpx solid #ffe082;
 }
 
 .calendar-content {
@@ -77,14 +73,14 @@ export default {
 .calendar-title {
   font-size: 32rpx;
   font-weight: bold;
-  color: #f57f17;
+  color: #333333;
   margin-bottom: 8rpx;
   display: block;
 }
 
 .calendar-date {
   font-size: 28rpx;
-  color: #f9a825;
+  color: #333333;
 }
 
 .calendar-right {
