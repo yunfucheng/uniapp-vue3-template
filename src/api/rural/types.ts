@@ -9,3 +9,9 @@ export interface RuralRegion {
 export interface GetChildrenParams {
   parentCode?: string;
 }
+
+export interface DefaultSelectionRes {
+  leafCode: string;
+  path: Array<string | number>;
+  labels?: string[];
+}

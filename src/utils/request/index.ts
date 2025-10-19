@@ -16,6 +16,7 @@ export function setupRequest() {
       defaultConfig.baseURL = import.meta.env.VITE_API_PREFIX;
     }
     // #endif
+
     return defaultConfig;
   });
   requestInterceptors(http);

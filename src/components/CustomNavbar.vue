@@ -98,15 +98,19 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     this.getStatusBarHeight();
     // 初始化全局村屯选择
     this.ruralStore = useRuralStore();
+    // 强制从服务端获取默认路径并写入全局
+    await this.initDefaultSelection();
+    // 按全局选择更新展示
     if (this.ruralStore?.label) {
       this.currentVillage = this.ruralStore.label;
     }
-    if (Array.isArray(this.ruralStore?.path) && this.ruralStore.path.length) {
-      this.cascaderValue = [...this.ruralStore.path];
+    const hasPath = Array.isArray(this.ruralStore?.path) && this.ruralStore.path.length > 0;
+    if (hasPath) {
+      this.cascaderValue = [...this.ruralStore.path.map(v => String(v))];
     }
   },
   methods: {
@@ -122,6 +126,14 @@ export default {
       if (!this.villageCascaderData.length) {
         await this.loadRootRegions();
       }
+      // 再次确保预选路径已写入（避免部分场景丢失）
+      if (!this.cascaderValue.length && Array.isArray(this.ruralStore?.path)) {
+        this.cascaderValue = [...this.ruralStore.path];
+      }
+      // 若已有默认路径，打开前再次按路径确保各级 children 到位
+      if (Array.isArray(this.cascaderValue) && this.cascaderValue.length) {
+        await this.prefillByPath(this.cascaderValue);
+      }
       this.cascaderShow = true;
     },
     async loadRootRegions() {
@@ -130,7 +142,7 @@ export default {
         const items = await RuralApi.getChildren();
         this.villageCascaderData = (items || []).map(item => ({
           label: item.name,
-          value: item.code,
+          value: String(item.code),
           hasChildren: item.hasChildren,
         }));
       }
@@ -144,13 +156,14 @@ export default {
     },
     async onCascaderChange(value) {
       const path = Array.isArray(value) ? value : [value];
-      const node = this.findNodeByPath(path);
+      const normalized = path.map(v => String(v));
+      const node = this.findNodeByPath(normalized);
       if (node && node.hasChildren && (!node.children || node.children.length === 0)) {
         try {
           const children = await RuralApi.getChildren({ parentCode: node.value });
           node.children = (children || []).map(item => ({
             label: item.name,
-            value: item.code,
+            value: String(item.code),
             hasChildren: item.hasChildren,
           }));
           this.$forceUpdate();
@@ -162,10 +175,11 @@ export default {
       }
     },
     findNodeByPath(path) {
+      const normalized = Array.isArray(path) ? path.map(v => String(v)) : [];
       let nodes = this.villageCascaderData;
       let found = null;
-      for (const code of path) {
-        found = nodes && nodes.find(n => n.value === code);
+      for (const code of normalized) {
+        found = nodes && nodes.find(n => String(n.value) === String(code));
         if (!found) return null;
         nodes = found.children || [];
       }
@@ -191,6 +205,70 @@ export default {
     },
     onSectionSelect(section) {
       this.$emit('sectionSelect', section);
+    },
+    async initDefaultSelection() {
+      try {
+        const def = await RuralApi.getDefault();
+        if (def && Array.isArray(def.path) && def.path.length) {
+          await this.prefillByPath(def.path, def.labels);
+          const leafCode = def.leafCode ?? def.path[def.path.length - 1];
+          const leafLabel = (def.labels && def.labels.length) ? def.labels[def.labels.length - 1] : this.currentVillage;
+          this.currentVillage = leafLabel;
+          if (this.ruralStore) {
+            this.ruralStore.setSelection({ path: def.path, leafCode, label: leafLabel });
+          }
+        }
+      } catch (e) {
+        console.warn('获取默认乡村失败:', e);
+      }
+    },
+    async prefillByPath(path, labels) {
+      try {
+        // 确保根层已加载
+        if (!this.villageCascaderData.length) {
+          await this.loadRootRegions();
+        }
+        let parentCode = undefined;
+        let nodes = this.villageCascaderData;
+        const normalized = (Array.isArray(path) ? path : []).map(v => String(v));
+        for (let i = 0; i < normalized.length; i++) {
+          const code = normalized[i];
+          // 当前层若不存在目标节点，加载该层的兄弟节点
+          let node = nodes && nodes.find(n => String(n.value) === String(code));
+          if (!node) {
+            let children;
+            if (parentCode) {
+              children = await RuralApi.getChildren({ parentCode });
+            } else {
+              // 根层需不带 parentCode 的方式请求
+              children = await RuralApi.getChildren();
+            }
+            const mapped = (children || []).map(item => ({ label: item.name, value: String(item.code), hasChildren: item.hasChildren }));
+            if (parentCode) {
+              const parentNode = this.findNodeByPath(normalized.slice(0, i));
+              if (parentNode) parentNode.children = mapped;
+              nodes = parentNode ? parentNode.children : mapped;
+            } else {
+              this.villageCascaderData = mapped;
+              nodes = this.villageCascaderData;
+            }
+            node = nodes.find(n => String(n.value) === String(code));
+          }
+          // 如果不是最后一级，确保加载其子节点
+          if (node && i < normalized.length - 1 && (!node.children || node.children.length === 0)) {
+            const grandchildren = await RuralApi.getChildren({ parentCode: node.value });
+            node.children = (grandchildren || []).map(item => ({ label: item.name, value: String(item.code), hasChildren: item.hasChildren }));
+          }
+          parentCode = node ? node.value : undefined;
+          nodes = node && node.children ? node.children : [];
+        }
+        // 设置选中值与展示标签
+        this.cascaderValue = normalized;
+        const leafLabel = labels && labels.length ? labels[labels.length - 1] : (this.findNodeByPath(normalized)?.label || this.currentVillage);
+        this.currentVillage = leafLabel;
+      } catch (e) {
+        console.warn('预填充级联失败:', e);
+      }
     },
   },
 };
