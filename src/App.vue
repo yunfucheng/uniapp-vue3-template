@@ -5,7 +5,7 @@ import { mpUpdate } from '@/utils/index';
 
 const appStore = useAppStore();
 
-onLaunch(() => {
+onLaunch(async () => {
   console.log('App Launch');
 
   // 初始化系统信息
