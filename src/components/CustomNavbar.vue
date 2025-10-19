@@ -121,7 +121,8 @@ export default {
       this.currentVillage = leafLabel;
       this.cascaderValue = Array.isArray(values) ? values : [];
       this.saveVillageSelection(this.cascaderValue, leafLabel);
-      this.$emit('villageChange', { path: this.cascaderValue, leaf: leafLabel });
+      const code = this.cascaderValue.length ? this.cascaderValue[this.cascaderValue.length - 1] : '';
+      this.$emit('villageChange', { path: this.cascaderValue, leaf: leafLabel, code });
     },
     // 选择变化（auto-close或未点确认的场景）
     onCascaderChange(values) {
@@ -129,7 +130,8 @@ export default {
       this.currentVillage = leafLabel;
       this.cascaderValue = Array.isArray(values) ? values : [];
       this.saveVillageSelection(this.cascaderValue, leafLabel);
-      this.$emit('villageChange', { path: this.cascaderValue, leaf: leafLabel });
+      const code = this.cascaderValue.length ? this.cascaderValue[this.cascaderValue.length - 1] : '';
+      this.$emit('villageChange', { path: this.cascaderValue, leaf: leafLabel, code });
     },
     // 使用API加载顶层
     async fetchTopRegions() {
@@ -163,7 +165,8 @@ export default {
           const label = this.getLabelByPath(path) || leafLabel || this.currentVillage;
           this.currentVillage = label;
           this.saveVillageSelection(path, label);
-          this.$emit('villageChange', { path, leaf: label });
+          const code = path.length ? path[path.length - 1] : '';
+          this.$emit('villageChange', { path, leaf: label, code });
         }
       } catch (e) {
         console.warn('获取默认选中失败:', e);
@@ -218,11 +221,13 @@ export default {
         if (ok) {
           this.cascaderValue = path;
           const leaf = this.getLabelByPath(this.cascaderValue) || savedLeaf || this.currentVillage;
+          const code = path.length ? path[path.length - 1] : '';
           this.currentVillage = leaf;
-          this.$emit('villageChange', { path: this.cascaderValue, leaf });
+          storage.set('user:selectedVillageCode', code);
+          this.$emit('villageChange', { path: this.cascaderValue, leaf, code });
         } else if (savedLeaf) {
           this.currentVillage = savedLeaf;
-          this.$emit('villageChange', { path: [], leaf: savedLeaf });
+          this.$emit('villageChange', { path: [], leaf: savedLeaf, code: '' });
         }
       } catch (e) {
         console.warn('恢复村屯选择失败:', e);
