@@ -21,6 +21,7 @@
       <u-cascader
         v-model:show="cascaderShow" v-model="cascaderValue" :data="villageCascaderData"
         header-direction="column" :options-cols="1" :auto-close="true"
+        :lazy="true" :load-children="loadChildren" has-children-key="hasChildren"
         @change="onCascaderChange" @confirm="onCascaderConfirm"
       />
     </view>
@@ -50,6 +51,7 @@
 <script>
 import DataManager from '@/utils/dataManager.js';
 import storage from '@/utils/storage';
+import { getChildren } from '@/api/rural';
 
 export default {
   name: 'CustomNavbar',
@@ -81,58 +83,12 @@ export default {
       statusBarHeight: 0,
       // 级联选择器显示与选中值
       cascaderShow: false,
-      cascaderValue: ['广西省', '柳州市', '融水县', '安陲乡', '乌吉村', '乌翁屯'],
+      // 使用API后的选中值为代码路径
+      cascaderValue: [],
       // 当前展示的村屯名称（内部状态）
       currentVillage: this.selectedVillage || '乌翁屯',
-      // 级联数据
-      villageCascaderData: [
-        {
-          label: '广西省',
-          value: '广西省',
-          children: [
-            {
-              label: '柳州市',
-              value: '柳州市',
-              children: [
-                {
-                  label: '融水县',
-                  value: '融水县',
-                  children: [
-                    {
-                      label: '安陲乡',
-                      value: '安陲乡',
-                      children: [
-                        {
-                          label: '乌吉村',
-                          value: '乌吉村',
-                          children: [
-                            { label: '乌翁屯', value: '乌翁屯' },
-                            { label: '乌吉村', value: '乌吉屯' },
-                            { label: '黄泥屯', value: '黄泥屯' },
-                          ],
-                        },
-                      ],
-                    },
-                    {
-                      label: '香粉乡',
-                      value: '香粉乡',
-                      children: [
-                        {
-                          label: '九同村',
-                          value: '九同村',
-                          children: [
-                            { label: '九同屯', value: '九同屯' },
-                          ],
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      // 级联数据（API驱动，初始为空）
+      villageCascaderData: [],
     };
   },
   watch: {
@@ -144,7 +100,7 @@ export default {
     },
   },
   mounted() {
-    this.restoreVillageSelection();
+    this.initData();
     this.getStatusBarHeight();
   },
   methods: {
@@ -159,59 +115,72 @@ export default {
     onVillageSelect() {
       this.cascaderShow = true;
     },
-    // 级联选择确认
+    // 级联选择确认（values为代码路径）
     onCascaderConfirm(values) {
-      // values 为选中路径的值数组，最后一个即为村/屯名称
-      const leaf = Array.isArray(values) && values.length > 0 ? values[values.length - 1] : this.currentVillage;
-      this.currentVillage = leaf;
-      // 保存用户选择
-      this.saveVillageSelection(values, leaf);
-      // 向父组件通知更改
-      this.$emit('villageChange', {
-        path: values,
-        leaf,
-      });
-    },
-    // 新增：级联选择变化（支持 auto-close 或未点确认的场景）
-    onCascaderChange(values) {
-      const leaf = Array.isArray(values) && values.length > 0 ? values[values.length - 1] : this.currentVillage;
-      this.currentVillage = leaf;
+      const leafLabel = this.getLabelByPath(values) || this.currentVillage;
+      this.currentVillage = leafLabel;
       this.cascaderValue = Array.isArray(values) ? values : [];
-      this.saveVillageSelection(values, leaf);
-      this.$emit('villageChange', { path: this.cascaderValue, leaf });
+      this.saveVillageSelection(this.cascaderValue, leafLabel);
+      this.$emit('villageChange', { path: this.cascaderValue, leaf: leafLabel });
     },
-    // 校验路径是否存在于级联数据中
-    isValidPath(values) {
-      if (!Array.isArray(values) || values.length === 0) return false;
-      let level = this.villageCascaderData;
-      for (let i = 0; i < values.length; i++) {
-        const val = values[i];
-        const node = (level || []).find(item => item.value === val);
-        if (!node) return false;
-        level = node.children || [];
-      }
-      return true;
+    // 选择变化（auto-close或未点确认的场景）
+    onCascaderChange(values) {
+      const leafLabel = this.getLabelByPath(values) || this.currentVillage;
+      this.currentVillage = leafLabel;
+      this.cascaderValue = Array.isArray(values) ? values : [];
+      this.saveVillageSelection(this.cascaderValue, leafLabel);
+      this.$emit('villageChange', { path: this.cascaderValue, leaf: leafLabel });
     },
-    // 保存村屯选择到本地存储
-    saveVillageSelection(values, leaf) {
+    // 使用API加载顶层
+    async fetchTopRegions() {
+      const list = await getChildren();
+      this.villageCascaderData = Array.isArray(list) ? list.map(this.mapRegionToNode) : [];
+    },
+    // 提供给u-cascader的懒加载函数
+    async loadChildren(item) {
+      const resp = await getChildren({ parentCode: item.value });
+      return Array.isArray(resp) ? resp.map(this.mapRegionToNode) : [];
+    },
+    mapRegionToNode(region) {
+      return {
+        label: region.name,
+        value: region.code,
+        hasChildren: !!region.hasChildren,
+        // 不预置 children，改由懒加载时填充，避免空数组误判
+      };
+    },
+    // 初始化：加载顶层并尝试恢复用户选择
+    async initData() {
       try {
-        storage.setJSON('user:selectedVillagePath', values || []);
-        storage.set('user:selectedVillage', leaf || '');
+        await this.fetchTopRegions();
+        await this.restoreVillageSelection();
+      } catch (e) {
+        console.warn('初始化级联数据失败:', e);
+      }
+    },
+    // 保存村屯选择到本地存储（同时写入V2代码路径和兼容旧key）
+    saveVillageSelection(values, leafLabel) {
+      try {
+        const path = Array.isArray(values) ? values : [];
+        storage.setJSON('user:selectedVillagePathV2', path);
+        storage.setJSON('user:selectedVillagePath', path); // 兼容旧逻辑
+        storage.set('user:selectedVillage', leafLabel || '');
       } catch (e) {
         console.warn('保存村屯选择失败:', e);
       }
     },
-    // 恢复本地存储的选择
-    restoreVillageSelection() {
+    // 恢复本地存储的选择（优先使用代码路径V2），并按路径预加载层级
+    async restoreVillageSelection() {
       try {
-        const path = storage.getJSON('user:selectedVillagePath') || [];
+        const pathV2 = storage.getJSON('user:selectedVillagePathV2') || [];
+        const legacyPath = storage.getJSON('user:selectedVillagePath') || [];
         const savedLeaf = storage.get('user:selectedVillage');
-        if (this.isValidPath(path)) {
-          this.cascaderValue = path;
-          const leaf = savedLeaf || (path.length ? path[path.length - 1] : this.currentVillage);
+        const ok = await this.warmLoadPath(pathV2) || await this.warmLoadPath(legacyPath);
+        if (ok) {
+          this.cascaderValue = pathV2.length ? pathV2 : legacyPath;
+          const leaf = this.getLabelByPath(this.cascaderValue) || savedLeaf || this.currentVillage;
           this.currentVillage = leaf;
-          // 通知父组件，以便页面状态同步
-          this.$emit('villageChange', { path, leaf });
+          this.$emit('villageChange', { path: this.cascaderValue, leaf });
         } else if (savedLeaf) {
           this.currentVillage = savedLeaf;
           this.$emit('villageChange', { path: [], leaf: savedLeaf });
@@ -219,6 +188,46 @@ export default {
       } catch (e) {
         console.warn('恢复村屯选择失败:', e);
       }
+    },
+    // 根据路径依次加载各级子节点，构建树和level数据
+    async warmLoadPath(path) {
+      if (!Array.isArray(path) || path.length === 0) return false;
+      // 确保顶层已加载
+      if (!Array.isArray(this.villageCascaderData) || this.villageCascaderData.length === 0) {
+        await this.fetchTopRegions();
+      }
+      let level = this.villageCascaderData;
+      for (let i = 0; i < path.length - 1; i++) {
+        const val = path[i];
+        let node = (level || []).find(item => item.value === val);
+        // 兼容旧存储：按label匹配
+        if (!node) node = (level || []).find(item => item.label === val);
+        if (!node) return false;
+        if (node.hasChildren) {
+          if (!Array.isArray(node.children) || node.children.length === 0) {
+            const children = await this.loadChildren(node);
+            node.children = children;
+          }
+          level = node.children || [];
+        } else {
+          level = [];
+        }
+      }
+      return true;
+    },
+    // 根据代码路径获取叶子名称
+    getLabelByPath(path) {
+      if (!Array.isArray(path) || path.length === 0) return '';
+      let level = this.villageCascaderData;
+      let label = '';
+      for (let i = 0; i < path.length; i++) {
+        const val = path[i];
+        const node = (level || []).find(item => item.value === val) || (level || []).find(item => item.label === val);
+        if (!node) break;
+        label = node.label;
+        level = node.children || [];
+      }
+      return label;
     },
     onSectionSelect(section) {
       this.$emit('sectionSelect', section);
