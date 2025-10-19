@@ -20,7 +20,8 @@
       <!-- 乡村级联选择器 -->
       <u-cascader
         v-model:show="cascaderShow" v-model="cascaderValue" :data="villageCascaderData"
-        header-direction="column" :options-cols="1" @confirm="onCascaderConfirm"
+        header-direction="column" :options-cols="1" :auto-close="true"
+        @change="onCascaderChange" @confirm="onCascaderConfirm"
       />
     </view>
 
@@ -48,6 +49,7 @@
 
 <script>
 import DataManager from '@/utils/dataManager.js';
+import storage from '@/utils/storage';
 
 export default {
   name: 'CustomNavbar',
@@ -105,7 +107,7 @@ export default {
                           value: '乌吉村',
                           children: [
                             { label: '乌翁屯', value: '乌翁屯' },
-                            { label: '乌吉村', value: '乌吉村' },
+                            { label: '乌吉村', value: '乌吉屯' },
                             { label: '黄泥屯', value: '黄泥屯' },
                           ],
                         },
@@ -142,6 +144,7 @@ export default {
     },
   },
   mounted() {
+    this.restoreVillageSelection();
     this.getStatusBarHeight();
   },
   methods: {
@@ -161,11 +164,61 @@ export default {
       // values 为选中路径的值数组，最后一个即为村/屯名称
       const leaf = Array.isArray(values) && values.length > 0 ? values[values.length - 1] : this.currentVillage;
       this.currentVillage = leaf;
+      // 保存用户选择
+      this.saveVillageSelection(values, leaf);
       // 向父组件通知更改
       this.$emit('villageChange', {
         path: values,
         leaf,
       });
+    },
+    // 新增：级联选择变化（支持 auto-close 或未点确认的场景）
+    onCascaderChange(values) {
+      const leaf = Array.isArray(values) && values.length > 0 ? values[values.length - 1] : this.currentVillage;
+      this.currentVillage = leaf;
+      this.cascaderValue = Array.isArray(values) ? values : [];
+      this.saveVillageSelection(values, leaf);
+      this.$emit('villageChange', { path: this.cascaderValue, leaf });
+    },
+    // 校验路径是否存在于级联数据中
+    isValidPath(values) {
+      if (!Array.isArray(values) || values.length === 0) return false;
+      let level = this.villageCascaderData;
+      for (let i = 0; i < values.length; i++) {
+        const val = values[i];
+        const node = (level || []).find(item => item.value === val);
+        if (!node) return false;
+        level = node.children || [];
+      }
+      return true;
+    },
+    // 保存村屯选择到本地存储
+    saveVillageSelection(values, leaf) {
+      try {
+        storage.setJSON('user:selectedVillagePath', values || []);
+        storage.set('user:selectedVillage', leaf || '');
+      } catch (e) {
+        console.warn('保存村屯选择失败:', e);
+      }
+    },
+    // 恢复本地存储的选择
+    restoreVillageSelection() {
+      try {
+        const path = storage.getJSON('user:selectedVillagePath') || [];
+        const savedLeaf = storage.get('user:selectedVillage');
+        if (this.isValidPath(path)) {
+          this.cascaderValue = path;
+          const leaf = savedLeaf || (path.length ? path[path.length - 1] : this.currentVillage);
+          this.currentVillage = leaf;
+          // 通知父组件，以便页面状态同步
+          this.$emit('villageChange', { path, leaf });
+        } else if (savedLeaf) {
+          this.currentVillage = savedLeaf;
+          this.$emit('villageChange', { path: [], leaf: savedLeaf });
+        }
+      } catch (e) {
+        console.warn('恢复村屯选择失败:', e);
+      }
     },
     onSectionSelect(section) {
       this.$emit('sectionSelect', section);
