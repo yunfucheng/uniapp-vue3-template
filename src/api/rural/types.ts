@@ -11,8 +11,6 @@ export interface GetChildrenParams {
 }
 
 export interface DefaultSelectionRes {
-  label: string;
-  value: string;
-  children?: DefaultSelectionRes[];
-  hasChildren?: boolean;
+  path: string[];
+  leafLabel: string;
 }

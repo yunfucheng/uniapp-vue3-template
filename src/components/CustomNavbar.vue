@@ -51,7 +51,7 @@
 <script>
 import DataManager from '@/utils/dataManager.js';
 import storage from '@/utils/storage';
-import { getChildren } from '@/api/rural';
+import { getChildren, getDefault } from '@/api/rural';
 
 export default {
   name: 'CustomNavbar',
@@ -149,12 +149,37 @@ export default {
         // 不预置 children，改由懒加载时填充，避免空数组误判
       };
     },
-    // 初始化：加载顶层并尝试恢复用户选择
+    // 默认选中（无本地缓存时调用后端默认）
+    async fetchDefaultSelection() {
+      try {
+        const def = await getDefault();
+        const path = Array.isArray(def?.path) ? def.path : [];
+        const leafLabel = def?.leafLabel || '';
+        if (!path.length) return;
+        // 逐级预加载并设置选中
+        const ok = await this.warmLoadPath(path);
+        if (ok) {
+          this.cascaderValue = path;
+          const label = this.getLabelByPath(path) || leafLabel || this.currentVillage;
+          this.currentVillage = label;
+          this.saveVillageSelection(path, label);
+          this.$emit('villageChange', { path, leaf: label });
+        }
+      } catch (e) {
+        console.warn('获取默认选中失败:', e);
+      }
+    },
+    // 初始化：加载顶层并尝试恢复用户选择；无缓存则使用默认
     async initData() {
       try {
-        await this.fetchTopRegions();
         await this.cleanupLegacyStorageOnce();
-        await this.restoreVillageSelection();
+        await this.fetchTopRegions();
+        const path = storage.getJSON('user:selectedVillagePath') || [];
+        if (Array.isArray(path) && path.length > 0) {
+          await this.restoreVillageSelection();
+        } else {
+          await this.fetchDefaultSelection();
+        }
       } catch (e) {
         console.warn('初始化级联数据失败:', e);
       }
@@ -176,7 +201,9 @@ export default {
     saveVillageSelection(values, leafLabel) {
       try {
         const path = Array.isArray(values) ? values : [];
+        const code = path.length ? path[path.length - 1] : '';
         storage.setJSON('user:selectedVillagePath', path);
+        storage.set('user:selectedVillageCode', code);
         storage.set('user:selectedVillage', leafLabel || '');
       } catch (e) {
         console.warn('保存村屯选择失败:', e);
