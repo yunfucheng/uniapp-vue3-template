@@ -153,31 +153,43 @@ export default {
     async initData() {
       try {
         await this.fetchTopRegions();
+        await this.cleanupLegacyStorageOnce();
         await this.restoreVillageSelection();
       } catch (e) {
         console.warn('初始化级联数据失败:', e);
       }
     },
-    // 保存村屯选择到本地存储（同时写入V2代码路径和兼容旧key）
+    // 一次性清理旧的本地存储键（V2等），后续仅用一个键
+    async cleanupLegacyStorageOnce() {
+      try {
+        const cleaned = storage.get('user:cascaderStorageCleaned');
+        if (!cleaned) {
+          storage.remove('user:selectedVillagePathV2');
+          storage.remove('user:selectedVillagePath');
+          storage.set('user:cascaderStorageCleaned', '1');
+        }
+      } catch (e) {
+        console.warn('清理本地存储失败:', e);
+      }
+    },
+    // 保存村屯选择到本地存储（仅用一个键）
     saveVillageSelection(values, leafLabel) {
       try {
         const path = Array.isArray(values) ? values : [];
-        storage.setJSON('user:selectedVillagePathV2', path);
-        storage.setJSON('user:selectedVillagePath', path); // 兼容旧逻辑
+        storage.setJSON('user:selectedVillagePath', path);
         storage.set('user:selectedVillage', leafLabel || '');
       } catch (e) {
         console.warn('保存村屯选择失败:', e);
       }
     },
-    // 恢复本地存储的选择（优先使用代码路径V2），并按路径预加载层级
+    // 恢复本地存储的选择（仅从一个键读取），并按路径预加载层级
     async restoreVillageSelection() {
       try {
-        const pathV2 = storage.getJSON('user:selectedVillagePathV2') || [];
-        const legacyPath = storage.getJSON('user:selectedVillagePath') || [];
+        const path = storage.getJSON('user:selectedVillagePath') || [];
         const savedLeaf = storage.get('user:selectedVillage');
-        const ok = await this.warmLoadPath(pathV2) || await this.warmLoadPath(legacyPath);
+        const ok = await this.warmLoadPath(path);
         if (ok) {
-          this.cascaderValue = pathV2.length ? pathV2 : legacyPath;
+          this.cascaderValue = path;
           const leaf = this.getLabelByPath(this.cascaderValue) || savedLeaf || this.currentVillage;
           this.currentVillage = leaf;
           this.$emit('villageChange', { path: this.cascaderValue, leaf });
