@@ -20,7 +20,7 @@
       <!-- 乡村级联选择器 -->
       <u-cascader
         v-model:show="cascaderShow" v-model="cascaderValue" :data="villageCascaderData"
-        header-direction="column" :options-cols="1" @confirm="onCascaderConfirm"
+        header-direction="column" :options-cols="1" @change="onCascaderChange" @confirm="onCascaderConfirm"
       />
     </view>
 
@@ -48,6 +48,8 @@
 
 <script>
 import DataManager from '@/utils/dataManager.js';
+import { RuralApi } from '@/api';
+import { useRuralStore } from '@/store';
 
 export default {
   name: 'CustomNavbar',
@@ -79,58 +81,13 @@ export default {
       statusBarHeight: 0,
       // 级联选择器显示与选中值
       cascaderShow: false,
-      cascaderValue: ['广西省', '柳州市', '融水县', '安陲乡', '乌吉村', '乌翁屯'],
+      cascaderValue: [],
       // 当前展示的村屯名称（内部状态）
       currentVillage: this.selectedVillage || '乌翁屯',
-      // 级联数据
-      villageCascaderData: [
-        {
-          label: '广西省',
-          value: '广西省',
-          children: [
-            {
-              label: '柳州市',
-              value: '柳州市',
-              children: [
-                {
-                  label: '融水县',
-                  value: '融水县',
-                  children: [
-                    {
-                      label: '安陲乡',
-                      value: '安陲乡',
-                      children: [
-                        {
-                          label: '乌吉村',
-                          value: '乌吉村',
-                          children: [
-                            { label: '乌翁屯', value: '乌翁屯' },
-                            { label: '乌吉村', value: '乌吉村' },
-                            { label: '黄泥屯', value: '黄泥屯' },
-                          ],
-                        },
-                      ],
-                    },
-                    {
-                      label: '香粉乡',
-                      value: '香粉乡',
-                      children: [
-                        {
-                          label: '九同村',
-                          value: '九同村',
-                          children: [
-                            { label: '九同屯', value: '九同屯' },
-                          ],
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      // 级联数据（从服务端懒加载）
+      villageCascaderData: [],
+      isCascaderLoading: false,
+      ruralStore: null,
     };
   },
   watch: {
@@ -143,6 +100,14 @@ export default {
   },
   mounted() {
     this.getStatusBarHeight();
+    // 初始化全局村屯选择
+    this.ruralStore = useRuralStore();
+    if (this.ruralStore?.label) {
+      this.currentVillage = this.ruralStore.label;
+    }
+    if (Array.isArray(this.ruralStore?.path) && this.ruralStore.path.length) {
+      this.cascaderValue = [...this.ruralStore.path];
+    }
   },
   methods: {
     getStatusBarHeight() {
@@ -153,18 +118,75 @@ export default {
       });
     },
     // 打开级联选择器
-    onVillageSelect() {
+    async onVillageSelect() {
+      if (!this.villageCascaderData.length) {
+        await this.loadRootRegions();
+      }
       this.cascaderShow = true;
+    },
+    async loadRootRegions() {
+      try {
+        this.isCascaderLoading = true;
+        const items = await RuralApi.getChildren();
+        this.villageCascaderData = (items || []).map(item => ({
+          label: item.name,
+          value: item.code,
+          hasChildren: item.hasChildren,
+        }));
+      }
+      catch (e) {
+        console.error('加载顶层地区失败:', e);
+        uni.$u.toast('加载地区失败');
+      }
+      finally {
+        this.isCascaderLoading = false;
+      }
+    },
+    async onCascaderChange(value) {
+      const path = Array.isArray(value) ? value : [value];
+      const node = this.findNodeByPath(path);
+      if (node && node.hasChildren && (!node.children || node.children.length === 0)) {
+        try {
+          const children = await RuralApi.getChildren({ parentCode: node.value });
+          node.children = (children || []).map(item => ({
+            label: item.name,
+            value: item.code,
+            hasChildren: item.hasChildren,
+          }));
+          this.$forceUpdate();
+        }
+        catch (e) {
+          console.error('加载子地区失败:', e);
+          uni.$u.toast('加载子地区失败');
+        }
+      }
+    },
+    findNodeByPath(path) {
+      let nodes = this.villageCascaderData;
+      let found = null;
+      for (const code of path) {
+        found = nodes && nodes.find(n => n.value === code);
+        if (!found) return null;
+        nodes = found.children || [];
+      }
+      return found;
     },
     // 级联选择确认
     onCascaderConfirm(values) {
-      // values 为选中路径的值数组，最后一个即为村/屯名称
-      const leaf = Array.isArray(values) && values.length > 0 ? values[values.length - 1] : this.currentVillage;
-      this.currentVillage = leaf;
+      // values 为选中路径的值数组，最后一个即为村/屯编码
+      const leafCode = Array.isArray(values) && values.length > 0 ? values[values.length - 1] : null;
+      const leafNode = leafCode ? this.findNodeByPath(values) : null;
+      const leafLabel = leafNode?.label || this.currentVillage;
+      this.currentVillage = leafLabel;
+      // 更新全局选择
+      if (this.ruralStore) {
+        this.ruralStore.setSelection({ path: values, leafCode, label: leafLabel });
+      }
       // 向父组件通知更改
       this.$emit('villageChange', {
         path: values,
-        leaf,
+        leaf: leafLabel,
+        leafCode,
       });
     },
     onSectionSelect(section) {

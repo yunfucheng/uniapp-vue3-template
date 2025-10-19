@@ -130,7 +130,7 @@ function responseInterceptors(http: HttpRequestAbstract) {
     }
 
     // 请求成功则返回结果
-    if (data.code === 200) {
+    if (data.code === 200 || data.code === 0 || data.code === '0') {
       return response || {};
     }
 
