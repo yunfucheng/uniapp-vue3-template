@@ -97,7 +97,7 @@ onLoad(() => {
 });
 
 const goMyPhotos = () => {
-  uni.navigateTo({ url: '/pages/photowall/manage' });
+  uni.navigateTo({ url: '/pages/user-photo/manage' });
 };
 
 const goMyMoments = () => {

@@ -22,6 +22,7 @@ declare module 'vue' {
     PhotoWallSection: typeof import('./../src/components/home/PhotoWallSection.vue')['default']
     PurchaseDetail: typeof import('./../src/components/purchase/PurchaseDetail.vue')['default']
     PurchaseManagement: typeof import('./../src/components/purchase/PurchaseManagement.vue')['default']
+    QiniuUploader: typeof import('./../src/components/QiniuUploader.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SaleDetail: typeof import('./../src/components/sale/SaleDetail.vue')['default']

@@ -420,7 +420,7 @@ export default {
 
     // 跳转到添加照片页
     goToAddPhoto() {
-      uni.navigateTo({ url: '/pages/photowall/add' });
+      uni.navigateTo({ url: '/pages/user-photo/add' });
     },
 
     // 收购管理交互

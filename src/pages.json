@@ -16,7 +16,7 @@
           }
       },
       {
-          "path": "pages/photowall/wall",
+          "path": "pages/rural-photo/wall",
           "style": {
               "navigationBarTitleText": "家乡照片墙",
               "enablePullDownRefresh": false,
@@ -24,7 +24,15 @@
           }
       },
       {
-          "path": "pages/photowall/manage",
+          "path": "pages/user-photo/index",
+          "style": {
+              "navigationBarTitleText": "用户照片墙",
+              "enablePullDownRefresh": false,
+              "navigationStyle": "custom"
+          }
+      },
+      {
+          "path": "pages/user-photo/manage",
           "style": {
               "navigationBarTitleText": "照片管理",
               "enablePullDownRefresh": false,
@@ -64,9 +72,17 @@
             }
         },
         {
-            "path": "pages/photowall/add",
+            "path": "pages/user-photo/add",
             "style": {
                 "navigationBarTitleText": "添加照片",
+                "enablePullDownRefresh": false,
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/rural-photo/add",
+            "style": {
+                "navigationBarTitleText": "添加乡村照片",
                 "enablePullDownRefresh": false,
                 "navigationStyle": "custom"
             }

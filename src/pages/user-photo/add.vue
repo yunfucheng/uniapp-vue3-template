@@ -3,7 +3,7 @@
     <view>
       <u-navbar :auto-back="true" placeholder fixed>
         <template #right>
-          <u-button size="small" color="#09BE4F" shape="circle" >
+          <u-button size="small" color="#09BE4F" shape="circle" @click="publish">
             发布
           </u-button>
         </template>
@@ -21,16 +21,13 @@
 
         <!-- 多图片上传：不使用卡片容器，仅保留组件与细线 -->
         <view class="section">
-          <u-upload
-            v-model:file-list="fileList"
-            accept="image"
+          <QiniuUploader
+            v-model="uploadedUrls"
             :max-count="9"
-            :auto-upload="false"
-            multiple
-            :preview-full-image="true"
-            list-type="picture"
-            @after-read="onAfterRead"
-            @delete="onDelete"
+            accept="image"
+            @success="onUploadSuccess"
+            @error="onUploadError"
+            @progress="onUploadProgress"
           />
           <view class="divider" />
         </view>
@@ -43,11 +40,13 @@
 </template>
 
 <script>
+import QiniuUploader from '@/components/QiniuUploader.vue';
 export default {
   name: 'AddPhotoPage',
+  components: { QiniuUploader },
   data() {
     return {
-      fileList: [],
+      uploadedUrls: [],
       contentText: '',
     };
   },
@@ -55,33 +54,25 @@ export default {
     goBack() {
       uni.navigateBack();
     },
-    onAfterRead(event) {
-      const files = Array.isArray(event.file) ? event.file : [event.file];
-      const mapped = files.map(f => ({
-        url: f.url || f.path || '',
-        name: f.name || 'image',
-        ext: f.ext || '',
-        size: f.size || 0,
-      })).filter(f => f.url);
-      this.fileList = this.fileList.concat(mapped);
+    onUploadSuccess(urls) {
+      this.uploadedUrls = [...this.uploadedUrls, ...urls];
     },
-    onDelete(event) {
-      const index = event.index;
-      if (index >= 0 && index < this.fileList.length) {
-        this.fileList.splice(index, 1);
-      }
+    onUploadError(err) {
+      uni.showToast({ title: '上传失败', icon: 'none' });
+      console.error(err);
+    },
+    onUploadProgress(payload) {
+      // 可根据需要显示进度
     },
     async publish() {
-      if (!this.fileList.length) {
+      if (!this.uploadedUrls.length) {
         uni.showToast({ title: '请先选择图片', icon: 'none' });
         return;
       }
-      // 此处可对接上传接口；当前仅作提交成功提示
       uni.showLoading({ title: '正在发表...' });
       setTimeout(() => {
         uni.hideLoading();
         uni.showToast({ title: '已发表', icon: 'success' });
-        // 返回上一页或首页
         setTimeout(() => uni.navigateBack(), 600);
       }, 800);
     },

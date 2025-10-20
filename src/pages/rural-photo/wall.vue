@@ -2,7 +2,9 @@
   <view>
       <u-navbar :auto-back="true" title="相片" placeholder>
         <template #right>
-          <u-icon name="plus" size="20" color="#09BE4F" />
+          <view @tap="goToAddPhoto">
+            <u-icon name="plus" size="20" color="#09BE4F" />
+          </view>
         </template>
       </u-navbar>
     </view>
@@ -50,6 +52,11 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    goToAddPhoto() {
+      uni.navigateTo({ url: '/pages/rural-photo/add' });
+    },
   },
 };
 </script>

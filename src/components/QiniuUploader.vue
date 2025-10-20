@@ -1,0 +1,221 @@
+<template>
+  <view class="qiniu-uploader">
+    <u-upload
+      v-model:file-list="fileList"
+      :max-count="maxCount"
+      :multiple="multiple"
+      :auto-upload="false"
+      :preview-full-image="true"
+      :accept="accept"
+      @after-read="onAfterRead"
+      @delete="onDelete"
+    />
+  </view>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { getQiniuUploadToken } from '@/api/common';
+import type { QiniuUploadTokenRes } from '@/api/common/types';
+
+interface QiniuUploaderProps {
+  modelValue?: string[];
+  maxCount?: number;
+  multiple?: boolean;
+  accept?: 'image' | 'video' | 'all';
+  /** 上传到七牛的 key 前缀，例如 'images/' */
+  keyPrefix?: string;
+  /** 是否在选择后自动上传 */
+  autoUpload?: boolean;
+}
+
+const props = withDefaults(defineProps<QiniuUploaderProps>(), {
+  modelValue: () => [],
+  maxCount: 9,
+  multiple: true,
+  accept: 'image',
+  keyPrefix: 'uploads/',
+  autoUpload: true,
+});
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string[]): void;
+  (e: 'success', urls: string[]): void;
+  (e: 'error', error: any): void;
+  (e: 'progress', payload: { index: number; percent: number }): void;
+}>();
+
+// u-upload 文件列表
+const fileList = ref<any[]>([]);
+
+// 缓存的 token
+let cachedToken: (QiniuUploadTokenRes & { expireAt: number }) | null = null;
+
+function now() {
+  return Date.now();
+}
+function isTokenExpired() {
+  if (!cachedToken) return true;
+  // 预留 60 秒缓冲
+  return now() >= (cachedToken.expireAt - 60 * 1000);
+}
+
+async function ensureToken() {
+  if (!cachedToken || isTokenExpired()) {
+    const tokenRes = await getQiniuUploadToken();
+    cachedToken = {
+      ...tokenRes,
+      expireAt: now() + (tokenRes.expireSeconds * 1000),
+    };
+  }
+  return cachedToken;
+}
+
+function normalizeDomain(domain: string) {
+  if (!domain) return '';
+  let d = domain.trim();
+  if (!d.startsWith('http://') && !d.startsWith('https://')) d = `https://${d}`;
+  return d.replace(/\/+$/, '');
+}
+
+function getExtByNameOrUrl(name?: string, url?: string) {
+  const fromName = name && name.includes('.') ? name.split('.').pop() || '' : '';
+  if (fromName) return fromName.toLowerCase();
+  if (url && url.includes('.')) {
+    const seg = url.split('?')[0];
+    const ext = seg.split('.').pop() || '';
+    return ext.toLowerCase();
+  }
+  return 'jpg'; // 默认图片扩展
+}
+
+function buildKey(item: any, prefix = props.keyPrefix) {
+  const ts = Date.now();
+  const rand = Math.random().toString(36).slice(2, 8);
+  const ext = getExtByNameOrUrl(item.name, item.url || item.path);
+  return `${prefix}${ts}-${rand}.${ext}`;
+}
+
+async function uploadOne(item: any, index: number): Promise<{ key: string; url: string }> {
+  const tk = await ensureToken();
+  const uploadUrl = tk.uploadEndpoint;
+  const key = buildKey(item);
+
+  return new Promise((resolve, reject) => {
+    // H5 端优先使用 File 对象
+    // #ifdef H5
+    const optionH5: UniApp.UploadFileOption = {
+      url: uploadUrl,
+      name: 'file',
+      formData: { token: tk.token, key },
+      file: (item.file as File) || undefined,
+      success(res) {
+        try {
+          const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+          const fileUrl = `${normalizeDomain(tk.domain)}/${data.key}`;
+          emit('progress', { index, percent: 100 });
+          resolve({ key: data.key, url: fileUrl });
+        }
+        catch (e) {
+          reject(e);
+        }
+      },
+      fail(err) {
+        emit('error', err);
+        reject(err);
+      },
+    };
+    const taskH5 = (uni.uploadFile as unknown as (opt: UniApp.UploadFileOption) => UniApp.UploadTask)(optionH5);
+    taskH5.onProgressUpdate?.((progress) => {
+      emit('progress', { index, percent: progress.progress });
+    });
+    return;
+    // #endif
+
+    // 非 H5 端使用 filePath
+    // #ifndef H5
+    const filePath = item.url || item.path || item.tempFilePath || item.thumb || '';
+    const option: UniApp.UploadFileOption = {
+      url: uploadUrl,
+      name: 'file',
+      filePath,
+      formData: { token: tk.token, key },
+      success(res) {
+        try {
+          const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+          const fileUrl = `${normalizeDomain(tk.domain)}/${data.key}`;
+          emit('progress', { index, percent: 100 });
+          resolve({ key: data.key, url: fileUrl });
+        }
+        catch (e) {
+          reject(e);
+        }
+      },
+      fail(err) {
+        emit('error', err);
+        reject(err);
+      },
+    };
+    const task = (uni.uploadFile as unknown as (opt: UniApp.UploadFileOption) => UniApp.UploadTask)(option);
+    task.onProgressUpdate?.((progress) => {
+      emit('progress', { index, percent: progress.progress });
+    });
+    // #endif
+  });
+}
+
+async function onAfterRead(event: any) {
+  const files = Array.isArray(event.file) ? event.file : [event.file];
+  fileList.value = fileList.value.concat(files);
+
+  if (props.autoUpload) {
+    const uploaded: string[] = [];
+    for (let i = 0; i < files.length; i++) {
+      try {
+        const { url } = await uploadOne(files[i], i);
+        uploaded.push(url);
+      }
+      catch (e) {
+        uni.$u.toast('上传失败');
+        emit('error', e);
+      }
+    }
+    emit('update:modelValue', [...(props.modelValue || []), ...uploaded]);
+    emit('success', uploaded);
+  }
+}
+
+function onDelete(event: any) {
+  const index = event.index;
+  if (index >= 0 && index < fileList.value.length) {
+    fileList.value.splice(index, 1);
+  }
+}
+
+async function submit() {
+  const uploaded: string[] = [];
+  for (let i = 0; i < fileList.value.length; i++) {
+    const item = fileList.value[i];
+    try {
+      const { url } = await uploadOne(item, i);
+      uploaded.push(url);
+    }
+    catch (e) {
+      uni.$u.toast('上传失败');
+      emit('error', e);
+    }
+  }
+  emit('update:modelValue', [...(props.modelValue || []), ...uploaded]);
+  emit('success', uploaded);
+  return uploaded;
+}
+
+// 暴露提交方法，适用于 autoUpload=false
+defineExpose({ submit });
+</script>
+
+<style scoped>
+.qiniu-uploader {
+  width: 100%;
+}
+</style>

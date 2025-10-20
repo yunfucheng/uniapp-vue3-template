@@ -42,7 +42,7 @@ export default {
   methods: {
     onBannerTap(banner) {
       // 跳转到家乡照片墙页面
-      uni.navigateTo({ url: '/pages/photowall/wall' });
+      uni.navigateTo({ url: '/pages/rural-photo/wall' });
     },
   },
 };
