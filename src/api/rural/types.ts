@@ -37,3 +37,32 @@ export interface QiniuUploadResult {
   /** 文件类型 */
   mimeType?: string;
 }
+
+// 乡村照片相关接口
+export interface CreateRuralPhotoParams {
+  /** 照片标题 */
+  title: string;
+  /** 照片描述 */
+  description: string;
+  /** 图片URL */
+  imageUrl: string;
+  /** 乡村代码 */
+  ruralCode: string;
+}
+
+export interface RuralPhoto {
+  /** 照片ID */
+  id: string;
+  /** 照片标题 */
+  title: string;
+  /** 照片描述 */
+  description: string;
+  /** 图片URL */
+  imageUrl: string;
+  /** 乡村代码 */
+  ruralCode: string;
+  /** 创建时间 */
+  createTime: string;
+  /** 更新时间 */
+  updateTime?: string;
+}

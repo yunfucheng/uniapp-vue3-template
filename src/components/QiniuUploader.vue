@@ -2,8 +2,8 @@
   <view class="qiniu-uploader">
     <u-upload
       v-model:file-list="fileList"
-      :max-count="maxCount"
-      :multiple="multiple"
+      :max-count="props.singleMode ? 1 : maxCount"
+      :multiple="props.singleMode ? false : multiple"
       :auto-upload="false"
       :preview-full-image="true"
       :accept="accept"
@@ -19,7 +19,7 @@ import { getQiniuUploadToken } from '@/api/common';
 import type { QiniuUploadTokenRes } from '@/api/common/types';
 
 interface QiniuUploaderProps {
-  modelValue?: string[];
+  modelValue?: string | string[];
   maxCount?: number;
   multiple?: boolean;
   accept?: 'image' | 'video' | 'all';
@@ -27,6 +27,8 @@ interface QiniuUploaderProps {
   keyPrefix?: string;
   /** 是否在选择后自动上传 */
   autoUpload?: boolean;
+  /** 是否为单图模式 */
+  singleMode?: boolean;
 }
 
 const props = withDefaults(defineProps<QiniuUploaderProps>(), {
@@ -36,10 +38,11 @@ const props = withDefaults(defineProps<QiniuUploaderProps>(), {
   accept: 'image',
   keyPrefix: 'uploads/',
   autoUpload: true,
+  singleMode: false,
 });
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string[]): void;
+  (e: 'update:modelValue', value: string | string[]): void;
   (e: 'success', urls: string[]): void;
   (e: 'error', error: any): void;
   (e: 'progress', payload: { index: number; percent: number }): void;
@@ -166,7 +169,13 @@ async function uploadOne(item: any, index: number): Promise<{ key: string; url: 
 
 async function onAfterRead(event: any) {
   const files = Array.isArray(event.file) ? event.file : [event.file];
-  fileList.value = fileList.value.concat(files);
+  
+  // 单图模式下，替换现有文件
+  if (props.singleMode) {
+    fileList.value = files;
+  } else {
+    fileList.value = fileList.value.concat(files);
+  }
 
   if (props.autoUpload) {
     const uploaded: string[] = [];
@@ -180,7 +189,14 @@ async function onAfterRead(event: any) {
         emit('error', e);
       }
     }
-    emit('update:modelValue', [...(props.modelValue || []), ...uploaded]);
+    
+    // 单图模式下返回单个URL，多图模式返回数组
+    if (props.singleMode) {
+      emit('update:modelValue', uploaded[0] || '');
+    } else {
+      const currentValue = Array.isArray(props.modelValue) ? props.modelValue : [];
+      emit('update:modelValue', [...currentValue, ...uploaded]);
+    }
     emit('success', uploaded);
   }
 }
@@ -189,6 +205,11 @@ function onDelete(event: any) {
   const index = event.index;
   if (index >= 0 && index < fileList.value.length) {
     fileList.value.splice(index, 1);
+    
+    // 单图模式下清空modelValue
+    if (props.singleMode) {
+      emit('update:modelValue', '');
+    }
   }
 }
 
@@ -205,7 +226,14 @@ async function submit() {
       emit('error', e);
     }
   }
-  emit('update:modelValue', [...(props.modelValue || []), ...uploaded]);
+  
+  // 单图模式下返回单个URL，多图模式返回数组
+  if (props.singleMode) {
+    emit('update:modelValue', uploaded[0] || '');
+  } else {
+    const currentValue = Array.isArray(props.modelValue) ? props.modelValue : [];
+    emit('update:modelValue', [...currentValue, ...uploaded]);
+  }
   emit('success', uploaded);
   return uploaded;
 }
