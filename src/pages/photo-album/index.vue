@@ -1,5 +1,5 @@
 <template>
-  <view class="user-photowall">
+  <view class="photo-album">
     <view>
       <u-navbar :auto-back="true" title="用户照片" placeholder>
         <template #right>
@@ -34,7 +34,7 @@ import LsjAlbum from '@/components/photowall/lsj-album.vue';
 import DataManager from '@/utils/dataManager.js';
 
 export default {
-  name: 'UserPhotoWall',
+  name: 'PhotoAlbumWall',
   components: { LsjAlbum },
   data() {
     return {
@@ -58,14 +58,14 @@ export default {
   },
   methods: {
     goToAddPhoto() {
-      uni.navigateTo({ url: '/pages/user-photo/add' });
+      uni.navigateTo({ url: '/pages/photo-album/add' });
     },
   },
 };
 </script>
 
 <style scoped>
-.user-photowall {
+.photo-album {
   padding: 24rpx 32rpx 40rpx;
 }
 

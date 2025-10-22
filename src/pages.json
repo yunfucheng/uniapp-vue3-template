@@ -24,7 +24,7 @@
           }
       },
       {
-          "path": "pages/user-photo/index",
+          "path": "pages/photo-album/index",
           "style": {
               "navigationBarTitleText": "用户照片墙",
               "enablePullDownRefresh": false,
@@ -32,7 +32,7 @@
           }
       },
       {
-          "path": "pages/user-photo/manage",
+          "path": "pages/photo-album/manage",
           "style": {
               "navigationBarTitleText": "照片管理",
               "enablePullDownRefresh": false,
@@ -72,7 +72,7 @@
             }
         },
         {
-            "path": "pages/user-photo/add",
+            "path": "pages/photo-album/add",
             "style": {
                 "navigationBarTitleText": "添加照片",
                 "enablePullDownRefresh": false,

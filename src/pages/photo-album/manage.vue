@@ -52,7 +52,7 @@ export default {
       });
     },
     goToAddPhoto() {
-      uni.navigateTo({ url: '/pages/user-photo/add' });
+      uni.navigateTo({ url: '/pages/photo-album/add' });
     },
   },
 };
