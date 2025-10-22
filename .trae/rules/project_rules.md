@@ -244,3 +244,222 @@
   - 文本：`--theme-main-color`、`--theme-content-color`、`--theme-tips-color` 等。
   - 背景：`--theme-bg-color`、`--theme-bg-color-secondary`。
   - 边框：`--theme-border-color`。
+
+# API 接入规范
+
+## 接口调用标准流程
+
+### 1. 接口定义与类型
+- 在 `@/api` 目录下按模块组织接口
+- 每个模块包含 `index.ts`（接口函数）和 `types.ts`（类型定义）
+- 使用统一的请求工具 `@/utils/request` 中的 `get`、`post` 等方法
+
+```typescript
+// @/api/rural/index.ts
+import { get, post } from '@/utils/request';
+import type { CreateRuralPhotoParams, RuralPhoto } from './types';
+
+export const createRuralPhoto = (data: CreateRuralPhotoParams) => 
+  post<RuralPhoto>('/api/app/rural-photo/create', { data });
+```
+
+### 2. 类型定义规范
+- 接口参数和返回值必须定义明确的 TypeScript 类型
+- 类型文件统一放在对应模块的 `types.ts` 中
+
+```typescript
+// @/api/rural/types.ts
+export interface CreateRuralPhotoParams {
+  title: string;
+  description: string;
+  imageUrl: string;
+  ruralCode: string;
+}
+
+export interface RuralPhoto {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  ruralCode: string;
+  createTime: string;
+  updateTime?: string;
+}
+```
+
+### 3. 页面中的接口调用
+- 使用 `async/await` 语法进行异步调用
+- 统一的错误处理和用户反馈
+- 调用前进行必要的参数验证
+
+```typescript
+// 页面中的标准调用模式
+const publish = async () => {
+  // 1. 参数验证
+  if (!canPublish.value) {
+    uni.showToast({ title: '请填写完整信息', icon: 'none' });
+    return;
+  }
+  
+  // 2. 显示加载状态
+  uni.showLoading({ title: '正在发表...' });
+  
+  try {
+    // 3. 准备请求数据
+    const requestData = {
+      title: titleText.value.trim(),
+      description: contentText.value.trim(),
+      imageUrl: uploadedUrl.value,
+      ruralCode: getCurrentRuralCode()
+    };
+    
+    // 4. 调用接口
+    const result = await createRuralPhoto(requestData);
+    
+    // 5. 成功处理
+    uni.hideLoading();
+    uni.showToast({ title: '发表成功', icon: 'success' });
+    
+    // 6. 页面跳转或状态更新
+    setTimeout(() => {
+      uni.navigateBack();
+    }, 600);
+  } catch (error) {
+    // 7. 错误处理
+    console.error('发布失败:', error);
+    uni.hideLoading();
+    uni.showToast({ title: '发表失败，请重试', icon: 'none' });
+  }
+};
+```
+
+## 全局乡村编码变量获取
+
+### 1. 存储键规范
+- 乡村路径：`user:selectedVillagePath` (JSON 数组)
+- 乡村代码：`user:selectedVillageCode` (字符串)
+- 乡村名称：`user:selectedVillage` (字符串)
+
+### 2. 获取方式
+```typescript
+import storage from '@/utils/storage';
+
+// 获取当前选择的乡村代码
+const getCurrentRuralCode = (): string => {
+  return storage.get('user:selectedVillageCode') || '';
+};
+
+// 获取乡村路径（用于级联选择器）
+const getVillagePath = (): string[] => {
+  return storage.getJSON('user:selectedVillagePath') || [];
+};
+
+// 获取乡村名称
+const getVillageName = (): string => {
+  return storage.get('user:selectedVillage') || '';
+};
+```
+
+### 3. 设置方式
+```typescript
+// 保存乡村选择（通常在 CustomNavbar 组件中处理）
+const saveVillageSelection = (path: string[], leafLabel: string) => {
+  const code = path.length ? path[path.length - 1] : '';
+  storage.setJSON('user:selectedVillagePath', path);
+  storage.set('user:selectedVillageCode', code);
+  storage.set('user:selectedVillage', leafLabel);
+};
+```
+
+### 4. 使用场景
+- 发布内容时获取当前乡村代码
+- 筛选数据时使用乡村代码作为条件
+- 页面显示时展示当前选择的乡村名称
+
+## 通用上传组件使用规范
+
+### 1. 组件引入
+```typescript
+import QiniuUploader from '@/components/QiniuUploader.vue';
+```
+
+### 2. 基本使用
+```vue
+<template>
+  <QiniuUploader
+    v-model="uploadedUrl"
+    :single-mode="true"
+    :max-count="1"
+    accept="image"
+    @success="onUploadSuccess"
+    @error="onUploadError"
+    @progress="onUploadProgress"
+  />
+</template>
+
+<script setup lang="ts">
+const uploadedUrl = ref<string>('');
+
+const onUploadSuccess = (urls: string[]) => {
+  if (urls.length > 0) {
+    uploadedUrl.value = urls[0];
+  }
+};
+
+const onUploadError = (err: any) => {
+  uni.showToast({ title: '上传失败', icon: 'none' });
+  console.error(err);
+};
+
+const onUploadProgress = (payload: any) => {
+  // 可根据需要显示进度
+};
+</script>
+```
+
+### 3. 组件属性说明
+- `v-model`: 绑定上传结果 URL（单图模式为字符串，多图模式为数组）
+- `single-mode`: 是否为单图模式，默认 `false`
+- `max-count`: 最大上传数量，默认 `9`
+- `multiple`: 是否支持多选，默认 `true`
+- `accept`: 接受的文件类型，可选 `'image' | 'video' | 'all'`
+- `key-prefix`: 上传到七牛的 key 前缀，默认 `'uploads/'`
+- `auto-upload`: 是否选择后自动上传，默认 `true`
+
+### 4. 事件处理
+- `@success`: 上传成功回调，参数为 URL 数组
+- `@error`: 上传失败回调，参数为错误信息
+- `@progress`: 上传进度回调，参数包含 `{ index, percent }`
+
+### 5. 手动上传模式
+```vue
+<template>
+  <QiniuUploader
+    ref="uploaderRef"
+    v-model="uploadedUrls"
+    :auto-upload="false"
+    :multiple="true"
+  />
+  <u-button @click="handleSubmit">手动上传</u-button>
+</template>
+
+<script setup lang="ts">
+const uploaderRef = ref();
+const uploadedUrls = ref<string[]>([]);
+
+const handleSubmit = async () => {
+  try {
+    const urls = await uploaderRef.value.submit();
+    console.log('上传完成:', urls);
+  } catch (error) {
+    console.error('上传失败:', error);
+  }
+};
+</script>
+```
+
+### 6. 注意事项
+- 组件内部自动处理七牛云 token 获取和缓存
+- 支持 H5 和小程序等多端上传
+- 自动生成唯一的文件名，避免冲突
+- 内置进度显示和错误处理机制
