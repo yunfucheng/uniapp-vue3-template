@@ -66,3 +66,9 @@ export interface RuralPhoto {
   /** 更新时间 */
   updateTime?: string;
 }
+
+// 获取推荐照片接口参数
+export interface GetRecommendedPhotosParams {
+  /** 乡村代码 */
+  ruralCode: string;
+}

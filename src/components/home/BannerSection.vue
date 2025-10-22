@@ -6,7 +6,7 @@
       :interval="5000"
       :duration="800"
       :circular="true"
-      indicator-dots="true"
+      :indicator-dots="true"
       indicator-color="rgba(255, 255, 255, 0.4)"
       indicator-active-color="#22c55e"
     >
@@ -21,8 +21,8 @@
           <text class="banner-title">
             {{ banner.title }}
           </text>
-          <text v-if="banner.describe" class="banner-describe">
-            {{ banner.describe }}
+          <text v-if="banner.description" class="banner-describe">
+            {{ banner.description }}
           </text>
         </view>
       </swiper-item>
@@ -30,22 +30,49 @@
   </view>
 </template>
 
-<script>
-export default {
-  name: 'BannerSection',
-  props: {
-    banners: {
-      type: Array,
-      default: () => [],
-    },
-  },
-  methods: {
-    onBannerTap(banner) {
-      // 跳转到家乡照片墙页面
-      uni.navigateTo({ url: '/pages/rural-photo/wall' });
-    },
-  },
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { getRecommendedPhotos } from '@/api/rural';
+import type { RuralPhoto } from '@/api/rural/types';
+import storage from '@/utils/storage';
+
+// 获取当前乡村代码
+const getCurrentRuralCode = (): string => {
+  return storage.get('user:selectedVillageCode') || '';
 };
+
+// 响应式数据
+const banners = ref<RuralPhoto[]>([]);
+
+// 获取推荐照片数据
+const fetchRecommendedPhotos = async () => {
+  try {
+    const ruralCode = getCurrentRuralCode();
+    if (!ruralCode) {
+      console.warn('未获取到乡村代码，使用默认数据');
+      return;
+    }
+
+    const result = await getRecommendedPhotos({ ruralCode });
+    if (Array.isArray(result) && result.length > 0) {
+      banners.value = result;
+    }
+  } catch (error) {
+    console.error('获取推荐照片失败:', error);
+    // 可以在这里设置默认数据或显示错误提示
+  }
+};
+
+// 点击轮播图事件
+const onBannerTap = (banner: RuralPhoto) => {
+  // 跳转到家乡照片墙页面
+  uni.navigateTo({ url: '/pages/rural-photo/wall' });
+};
+
+// 组件挂载时获取数据
+onMounted(() => {
+  fetchRecommendedPhotos();
+});
 </script>
 
 <style scoped>
