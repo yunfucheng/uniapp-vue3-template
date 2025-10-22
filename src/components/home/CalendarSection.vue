@@ -3,7 +3,7 @@
     <view class="calendar-content">
       <view class="calendar-left">
         <text class="calendar-date">
-          农历 {{ calendarData.lunarCalendar || '七月十二' }} · {{ calendarData.yearTips || '乙巳' }}年
+          农历 · {{ calendarData?.yinLi }}
         </text>
       </view>
       <view class="calendar-right">
@@ -18,42 +18,63 @@
   </view>
 </template>
 
-<script>
-export default {
-  name: 'CalendarSection',
-  props: {
-    calendarData: {
-      type: Object,
-      default: () => ({}),
-    },
-  },
-  methods: {
-    showCalendar() {
-      // 跳转到黄历详情页面
-      uni.navigateTo({
-        url: '/pages/calendar/calendar',
-      });
-    },
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { CalendarApi } from '@/api';
+import type { CalendarData } from '@/api/calendar/types';
 
-    // 获取宜事项文本
-    getSuitText() {
-      if (this.calendarData.suit) {
-        const items = this.calendarData.suit.split('.');
-        return items.slice(0, 3).join(' ');
-      }
-      return '祭祀 理发 作灶';
-    },
+// 响应式数据
+const calendarData = ref<CalendarData | null>(null);
+const loading = ref(false);
 
-    // 获取忌事项文本
-    getAvoidText() {
-      if (this.calendarData.avoid) {
-        const items = this.calendarData.avoid.split('.');
-        return items.slice(0, 3).join(' ');
-      }
-      return '嫁娶 栽种 祈福';
-    },
-  },
+// 方法
+const showCalendar = () => {
+  // 跳转到黄历详情页面
+  uni.navigateTo({
+    url: '/pages/calendar/calendar',
+  });
 };
+
+// 获取宜事项文本
+const getSuitText = () => {
+  if (calendarData.value?.yi) {
+    const items = calendarData.value.yi.split(' ');
+    return items.slice(0, 3).join(' ');
+  }
+  return '';
+};
+
+// 获取忌事项文本
+const getAvoidText = () => {
+  if (calendarData.value?.ji) {
+    const items = calendarData.value.ji.split(' ');
+    return items.slice(0, 3).join(' ');
+  }
+  return '';
+};
+
+// 获取今日日历数据
+const fetchTodayCalendar = async () => {
+  try {
+    loading.value = true;
+    const today = new Date().toISOString().split('T')[0]; // 格式：YYYY-MM-DD
+    
+    const response = await CalendarApi.getCalendarByDate({ date: today });
+    
+    if (response.code === '0' && response.result) {
+      calendarData.value = response.result;
+    }
+  } catch (error) {
+    console.error('获取日历数据失败:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 组件挂载时获取数据
+onMounted(() => {
+  fetchTodayCalendar();
+});
 </script>
 
 <style scoped>

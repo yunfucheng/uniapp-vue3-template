@@ -23,6 +23,18 @@ export function setupRequest() {
   responseInterceptors(http);
 }
 
+export function requestFull<T = any>(config: HttpRequestConfig): Promise<IResponse<T>> {
+  return new Promise((resolve, reject) => {
+    http.request(config).then((res: HttpResponse<IResponse<T>>) => {
+      console.log('[ res ] >', res);
+      resolve(res.data);
+    }).catch((err: any) => {
+      console.error('[ err ] >', err);
+      reject(err);
+    });
+  });
+}
+
 export function request<T = any>(config: HttpRequestConfig): Promise<T> {
   return new Promise((resolve, reject) => {
     http.request(config).then((res: HttpResponse<IResponse<T>>) => {
