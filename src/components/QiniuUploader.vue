@@ -77,7 +77,7 @@ async function ensureToken() {
 function normalizeDomain(domain: string) {
   if (!domain) return '';
   let d = domain.trim();
-  if (!d.startsWith('http://') && !d.startsWith('https://')) d = `https://${d}`;
+  if (!d.startsWith('http://') && !d.startsWith('https://')) d = `http://${d}`;
   return d.replace(/\/+$/, '');
 }
 
