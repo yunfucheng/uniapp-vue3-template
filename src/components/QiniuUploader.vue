@@ -65,11 +65,22 @@ function isTokenExpired() {
 
 async function ensureToken() {
   if (!cachedToken || isTokenExpired()) {
-    const tokenRes = await getQiniuUploadToken();
-    cachedToken = {
-      ...tokenRes,
-      expireAt: now() + (tokenRes.expireSeconds * 1000),
-    };
+    try {
+      console.log('获取七牛云上传token...');
+      const tokenRes = await getQiniuUploadToken();
+      console.log('获取token成功:', {
+        domain: tokenRes.domain,
+        uploadEndpoint: tokenRes.uploadEndpoint,
+        expireSeconds: tokenRes.expireSeconds
+      });
+      cachedToken = {
+        ...tokenRes,
+        expireAt: now() + (tokenRes.expireSeconds * 1000),
+      };
+    } catch (error) {
+      console.error('获取七牛云token失败:', error);
+      throw new Error('获取上传凭证失败，请检查网络连接');
+    }
   }
   return cachedToken;
 }
@@ -120,10 +131,12 @@ async function uploadOne(item: any, index: number): Promise<{ key: string; url: 
           resolve({ key: data.key, url: fileUrl });
         }
         catch (e) {
+          console.error('H5上传解析响应失败:', e, res);
           reject(e);
         }
       },
       fail(err) {
+        console.error('H5上传失败:', err);
         emit('error', err);
         reject(err);
       },
@@ -138,27 +151,62 @@ async function uploadOne(item: any, index: number): Promise<{ key: string; url: 
     // 非 H5 端使用 filePath
     // #ifndef H5
     const filePath = item.url || item.path || item.tempFilePath || item.thumb || '';
+    
+    // 检查文件路径是否有效
+    if (!filePath) {
+      const error = new Error('文件路径为空，无法上传');
+      console.error('上传失败 - 文件路径为空:', item);
+      emit('error', error);
+      reject(error);
+      return;
+    }
+
+    console.log('开始上传文件:', {
+      filePath,
+      uploadUrl,
+      key,
+      token: tk.token ? '***' : '无token'
+    });
+
     const option: UniApp.UploadFileOption = {
       url: uploadUrl,
       name: 'file',
       filePath,
       formData: { token: tk.token, key },
+      timeout: 60000, // 设置60秒超时
       success(res) {
+        console.log('上传成功响应:', res);
         try {
+          // 检查HTTP状态码
+          if (res.statusCode !== 200) {
+            throw new Error(`HTTP状态码错误: ${res.statusCode}`);
+          }
+          
           const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+          
+          // 检查七牛云响应
+          if (!data.key) {
+            throw new Error('七牛云响应格式错误，缺少key字段');
+          }
+          
           const fileUrl = `${normalizeDomain(tk.domain)}/${data.key}`;
+          console.log('文件上传成功:', fileUrl);
           emit('progress', { index, percent: 100 });
           resolve({ key: data.key, url: fileUrl });
         }
         catch (e) {
+          console.error('解析上传响应失败:', e, res);
+          emit('error', e);
           reject(e);
         }
       },
       fail(err) {
+        console.error('上传请求失败:', err);
         emit('error', err);
         reject(err);
       },
     };
+    
     const task = (uni.uploadFile as unknown as (opt: UniApp.UploadFileOption) => UniApp.UploadTask)(option);
     task.onProgressUpdate?.((progress) => {
       emit('progress', { index, percent: progress.progress });
@@ -170,6 +218,8 @@ async function uploadOne(item: any, index: number): Promise<{ key: string; url: 
 async function onAfterRead(event: any) {
   const files = Array.isArray(event.file) ? event.file : [event.file];
   
+  console.log('选择文件后回调:', files);
+  
   // 单图模式下，替换现有文件
   if (props.singleMode) {
     fileList.value = files;
@@ -178,17 +228,27 @@ async function onAfterRead(event: any) {
   }
 
   if (props.autoUpload) {
+    console.log('开始自动上传...');
     const uploaded: string[] = [];
     for (let i = 0; i < files.length; i++) {
       try {
+        console.log(`上传第${i + 1}个文件:`, files[i]);
         const { url } = await uploadOne(files[i], i);
         uploaded.push(url);
+        console.log(`第${i + 1}个文件上传成功:`, url);
       }
       catch (e) {
-        uni.$u.toast('上传失败');
+        console.error(`第${i + 1}个文件上传失败:`, e);
+        uni.showToast({ 
+          title: `第${i + 1}个文件上传失败`, 
+          icon: 'none',
+          duration: 3000
+        });
         emit('error', e);
       }
     }
+    
+    console.log('所有文件上传完成:', uploaded);
     
     // 单图模式下返回单个URL，多图模式返回数组
     if (props.singleMode) {

@@ -7,7 +7,7 @@
             size="small" 
             color="var(--theme-primary)" 
             shape="circle" 
-            @click="() => { console.log('按钮点击事件触发'); publish(); }"
+            @click="handlePublish"
             :disabled="!canPublish"
           >
             发布
@@ -135,6 +135,12 @@ const onUploadError = (err: any) => {
 
 const onUploadProgress = (payload: any) => {
   // 可根据需要显示进度
+}
+
+// 处理发布按钮点击事件
+const handlePublish = () => {
+  console.log('按钮点击事件触发')
+  publish()
 }
 
 const publish = async () => {

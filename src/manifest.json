@@ -41,8 +41,35 @@
           "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
           "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
           "<uses-feature android:name=\"android.hardware.camera\"/>",
-          "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-        ]
+          "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
+          "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+          "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
+          "<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\"/>"
+        ],
+        "abiFilters": ["armeabi-v7a", "arm64-v8a", "x86"],
+        "targetSdkVersion": 30,
+        "minSdkVersion": 21,
+        "networkSecurityConfig": {
+          "domain-config": [
+            {
+              "domains": [
+                "*.qiniucdn.com",
+                "*.qiniu.com",
+                "upload.qiniup.com",
+                "up.qiniup.com",
+                "upload-z0.qiniup.com",
+                "upload-z1.qiniup.com",
+                "upload-z2.qiniup.com",
+                "upload-na0.qiniup.com",
+                "upload-as0.qiniup.com"
+              ],
+              "cleartextTrafficPermitted": true
+            }
+          ],
+          "base-config": {
+            "cleartextTrafficPermitted": true
+          }
+        }
       },
       /* ios打包配置 */
       "ios": {},
