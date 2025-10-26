@@ -3,7 +3,13 @@
     <view>
       <u-navbar :auto-back="true" placeholder fixed>
         <template #right>
-          <u-button size="small" color="#09BE4F" shape="circle" @click="submitForm">
+          <u-button 
+            size="small" 
+            color="var(--theme-primary)" 
+            shape="circle" 
+            :disabled="!canPublish"
+            @click="submitForm"
+          >
             发布
           </u-button>
         </template>
@@ -13,31 +19,49 @@
     <!-- 内容区域 -->
     <scroll-view scroll-y class="content-scroll" :show-scrollbar="false">
       <view class="form-content">
-        <!-- 输入标题：移除分区标题，仅保留输入框 -->
+        <!-- 输入标题 -->
         <view class="section">
-          <input v-model="formData.title" class="text-input" placeholder="请输入标题" maxlength="50">
+          <input 
+            v-model="formData.title" 
+            class="text-input" 
+            placeholder="请输入标题" 
+            :maxlength="50"
+            :class="{ 'input-error': titleError }"
+          >
+          <view v-if="titleError" class="error-tip">{{ titleError }}</view>
         </view>
         <view class="divider" />
 
-        <!-- 输入内容：移除分区标题，仅保留输入框 -->
+        <!-- 输入内容 -->
         <view class="section">
-          <textarea v-model="formData.content" class="text-area" placeholder="请输入公告内容" maxlength="1000" auto-height />
+          <textarea 
+            v-model="formData.content" 
+            class="text-area" 
+            placeholder="请输入公告内容" 
+            :maxlength="1000" 
+            auto-height 
+            :class="{ 'input-error': contentError }"
+          />
           <view class="char-count">
             {{ formData.content.length }}/1000
           </view>
+          <view v-if="contentError" class="error-tip">{{ contentError }}</view>
         </view>
         <view class="divider" />
 
-        <!-- 图片上传：使用 uview-plus 的 u-upload -->
+        <!-- 图片上传：使用 QiniuUploader 组件 -->
         <view class="section">
-          <u-upload
-            v-model:file-list="imageFiles"
-            accept="image"
-            :max-count="9"
-            :auto-upload="false"
-            @after-read="onImageRead"
-            @delete="onImageDelete"
-          />
+          <view class="upload-section">
+            <view class="section-label">添加图片</view>
+            <QiniuUploader
+              v-model="uploadedUrls"
+              :single-mode="false"
+              :max-count="9"
+              accept="image"
+              @success="onUploadSuccess"
+              @error="onUploadError"
+            />
+          </view>
         </view>
         <view class="divider" />
 
@@ -47,10 +71,10 @@
             公告类型
           </text>
           <view class="row-value">
-            <text class="value-text">
+            <text class="value-text" :class="{ 'value-selected': formData.type }">
               {{ typeText }}
             </text>
-            <u-icon name="arrow-right" size="18" color="#9ca3af" />
+            <u-icon name="arrow-right" size="18" color="var(--theme-tips-color)" />
           </view>
         </view>
         <view class="divider" />
@@ -61,10 +85,10 @@
             级别类型
           </text>
           <view class="row-value">
-            <text class="value-text">
+            <text class="value-text" :class="{ 'value-selected': formData.level }">
               {{ levelText }}
             </text>
-            <u-icon name="arrow-right" size="18" color="#9ca3af" />
+            <u-icon name="arrow-right" size="18" color="var(--theme-tips-color)" />
           </view>
         </view>
         <view class="divider" />
@@ -75,7 +99,11 @@
             语音输入
           </text>
           <view class="row-value">
-            <u-icon name="arrow-right" size="18" color="#9ca3af" />
+            <view v-if="audioPath" class="audio-indicator">
+              <u-icon name="mic" size="16" color="var(--theme-success)" />
+              <text class="audio-duration">{{ audioDuration }}s</text>
+            </view>
+            <u-icon name="arrow-right" size="18" color="var(--theme-tips-color)" />
           </view>
         </view>
       </view>
@@ -147,219 +175,474 @@
   </view>
 </template>
 
-<script>
-export default {
-  name: 'AddAnnouncement',
-  data() {
-    return {
-      formData: {
-        title: '',
-        type: 'announcement',
-        level: 'tun',
-        content: '',
-        audioPath: '',
-        images: [],
-      },
-      imageFiles: [],
-      audioPath: '',
-      audioDuration: 0,
-      isRecording: false,
-      isPlaying: false,
-      recordStartTime: 0,
-      voicePopupShow: false,
-      showTypeSheet: false,
-      showLevelSheet: false,
-      typeActions: [
-        { name: '公告', value: 'announcement' },
-        { name: '通知', value: 'notice' },
-      ],
-      levelActions: [
-        { name: '乡级', value: 'township' },
-        { name: '村级', value: 'village' },
-        { name: '屯级', value: 'tun' },
-      ],
-    };
-  },
-  computed: {
-    typeText() {
-      return this.formData.type === 'notice' ? '通知' : '公告';
-    },
-    levelText() {
-      const map = { tun: '屯级', village: '村级', township: '乡级' };
-      return map[this.formData.level] || '屯级';
-    },
-  },
-  methods: {
-    goBack() {
-      uni.navigateBack();
-    },
-    chooseType() {
-      this.showTypeSheet = true;
-    },
-    chooseLevel() {
-      this.showLevelSheet = true;
-    },
-    openVoicePopup() {
-      this.voicePopupShow = true;
-    },
-    closeVoicePopup() {
-      this.voicePopupShow = false;
-    },
-    // 开始录音
-    startRecord() {
-      if (this.isRecording) {
-        this.stopRecord();
-        return;
-      }
-      this.isRecording = true;
-      this.recordStartTime = Date.now();
-      this.recorderManager = uni.getRecorderManager();
-      this.recorderManager.onStart(() => {});
-      this.recorderManager.onStop((res) => {
-        this.audioPath = res.tempFilePath;
-        this.audioDuration = Math.floor((Date.now() - this.recordStartTime) / 1000);
-        this.formData.audioPath = res.tempFilePath;
-        this.isRecording = false;
-      });
-      this.recorderManager.start({
-        duration: 60000,
-        sampleRate: 16000,
-        numberOfChannels: 1,
-        encodeBitRate: 96000,
-        format: 'mp3',
-      });
-    },
-    stopRecord() {
-      if (this.recorderManager) {
-        this.recorderManager.stop();
-      }
-    },
-    playAudio() {
-      if (!this.audioPath) {
-        return;
-      }
-      if (this.isPlaying) {
-        if (this.innerAudioContext) {
-          this.innerAudioContext.pause();
-        }
-        this.isPlaying = false;
-        return;
-      }
-      this.innerAudioContext = uni.createInnerAudioContext();
-      this.innerAudioContext.src = this.audioPath;
-      this.innerAudioContext.onPlay(() => {
-        this.isPlaying = true;
-      });
-      this.innerAudioContext.onEnded(() => {
-        this.isPlaying = false;
-      });
-      this.innerAudioContext.onError(() => {
-        this.isPlaying = false;
-      });
-      this.innerAudioContext.play();
-    },
-    deleteAudio() {
-      uni.showModal({
-        title: '确认删除',
-        content: '确定要删除这段录音吗？',
-        success: (res) => {
-          if (res.confirm) {
-            this.audioPath = '';
-            this.audioDuration = 0;
-            this.formData.audioPath = '';
-            if (this.innerAudioContext) {
-              this.innerAudioContext.destroy();
-            }
-          }
-        },
-      });
-    },
-    onImageRead(e) {
-      const files = Array.isArray(e.file) ? e.file : [e.file];
-      this.imageFiles = [...this.imageFiles, ...files];
-      this.formData.images = this.imageFiles.map(f => f.url || f.path || f.tempFilePath).filter(Boolean);
-    },
-    onImageDelete(e) {
-      const idx = e?.index;
-      if (typeof idx === 'number') {
-        this.imageFiles.splice(idx, 1);
-      }
-      this.formData.images = this.imageFiles.map(f => f.url || f.path || f.tempFilePath).filter(Boolean);
-    },
-    onTypeSelect(action) {
-      this.formData.type = action?.value === 'notice' ? 'notice' : 'announcement';
-      this.showTypeSheet = false;
-    },
-    onLevelSelect(action) {
-      const v = action?.value;
-      this.formData.level = v === 'township' ? 'township' : v === 'village' ? 'village' : 'tun';
-      this.showLevelSheet = false;
-    },
-    saveAnnouncement() {
-      if (!this.formData.title.trim()) {
-        uni.showToast({ title: '请输入标题', icon: 'none' });
-        return;
-      }
-      if (!this.formData.content.trim() && !this.formData.audioPath) {
-        uni.showToast({ title: '请输入内容或录制语音', icon: 'none' });
-        return;
-      }
-      uni.showLoading({ title: '保存中...' });
-      setTimeout(() => {
-        uni.hideLoading();
-        uni.showToast({ title: '保存成功', icon: 'success' });
-        setTimeout(() => {
-          uni.navigateBack();
-        }, 1200);
-      }, 1200);
-    },
-  },
-  onUnload() {
-    if (this.innerAudioContext) {
-      this.innerAudioContext.destroy();
-    }
-    if (this.recorderManager) {
-      this.recorderManager.stop();
-    }
-  },
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import QiniuUploader from '@/components/QiniuUploader.vue';
+
+const formData = ref({
+  title: '',
+  type: 'announcement',
+  level: 'tun',
+  content: '',
+  audioPath: '',
+  images: [] as string[],
+});
+
+const uploadedUrls = ref<string[]>([]);
+const audioPath = ref('');
+const audioDuration = ref(0);
+const isRecording = ref(false);
+const isPlaying = ref(false);
+const recordStartTime = ref(0);
+const voicePopupShow = ref(false);
+const showTypeSheet = ref(false);
+const showLevelSheet = ref(false);
+
+// 错误状态
+const titleError = ref('');
+const contentError = ref('');
+
+// 录音管理器
+let recorderManager: UniApp.RecorderManager | null = null;
+let innerAudioContext: UniApp.InnerAudioContext | null = null;
+
+const typeActions = [
+  { name: '公告', value: 'announcement' },
+  { name: '通知', value: 'notice' },
+];
+
+const levelActions = [
+  { name: '乡级', value: 'township' },
+  { name: '村级', value: 'village' },
+  { name: '屯级', value: 'tun' },
+];
+
+const typeText = computed(() => {
+  return formData.value.type === 'notice' ? '通知' : '公告';
+});
+
+const levelText = computed(() => {
+  const map = { tun: '屯级', village: '村级', township: '乡级' };
+  return map[formData.value.level as keyof typeof map] || '屯级';
+});
+
+// 是否可以发布
+const canPublish = computed(() => {
+  return formData.value.title.trim() && 
+         (formData.value.content.trim() || formData.value.audioPath);
+});
+
+// 验证表单
+const validateForm = () => {
+  titleError.value = '';
+  contentError.value = '';
+  
+  if (!formData.value.title.trim()) {
+    titleError.value = '请输入标题';
+    return false;
+  }
+  
+  if (!formData.value.content.trim() && !formData.value.audioPath) {
+    contentError.value = '请输入内容或录制语音';
+    return false;
+  }
+  
+  return true;
 };
+
+const chooseType = () => {
+  showTypeSheet.value = true;
+};
+
+const chooseLevel = () => {
+  showLevelSheet.value = true;
+};
+
+const openVoicePopup = () => {
+  voicePopupShow.value = true;
+};
+
+const closeVoicePopup = () => {
+  voicePopupShow.value = false;
+};
+
+// 开始录音
+const startRecord = () => {
+  if (isRecording.value) {
+    stopRecord();
+    return;
+  }
+  
+  isRecording.value = true;
+  recordStartTime.value = Date.now();
+  recorderManager = uni.getRecorderManager();
+  
+  recorderManager.onStart(() => {});
+  recorderManager.onStop((res) => {
+    audioPath.value = res.tempFilePath;
+    audioDuration.value = Math.floor((Date.now() - recordStartTime.value) / 1000);
+    formData.value.audioPath = res.tempFilePath;
+    isRecording.value = false;
+  });
+  
+  recorderManager.start({
+    duration: 60000,
+    sampleRate: 16000,
+    numberOfChannels: 1,
+    encodeBitRate: 96000,
+    format: 'mp3',
+  });
+};
+
+const stopRecord = () => {
+  if (recorderManager) {
+    recorderManager.stop();
+  }
+};
+
+const playAudio = () => {
+  if (!audioPath.value) {
+    return;
+  }
+  
+  if (isPlaying.value) {
+    if (innerAudioContext) {
+      innerAudioContext.pause();
+    }
+    isPlaying.value = false;
+    return;
+  }
+  
+  innerAudioContext = uni.createInnerAudioContext();
+  innerAudioContext.src = audioPath.value;
+  innerAudioContext.onPlay(() => {
+    isPlaying.value = true;
+  });
+  innerAudioContext.onEnded(() => {
+    isPlaying.value = false;
+  });
+  innerAudioContext.onError(() => {
+    isPlaying.value = false;
+  });
+  innerAudioContext.play();
+};
+
+const deleteAudio = () => {
+  uni.showModal({
+    title: '确认删除',
+    content: '确定要删除这段录音吗？',
+    success: (res) => {
+      if (res.confirm) {
+        audioPath.value = '';
+        audioDuration.value = 0;
+        formData.value.audioPath = '';
+        if (innerAudioContext) {
+          innerAudioContext.destroy();
+        }
+      }
+    },
+  });
+};
+
+// 上传成功回调
+const onUploadSuccess = (urls: string[]) => {
+  uploadedUrls.value = urls;
+  formData.value.images = urls;
+};
+
+// 上传失败回调
+const onUploadError = (err: any) => {
+  uni.showToast({ title: '上传失败', icon: 'none' });
+  console.error(err);
+};
+
+const onTypeSelect = (action: any) => {
+  formData.value.type = action?.value === 'notice' ? 'notice' : 'announcement';
+  showTypeSheet.value = false;
+};
+
+const onLevelSelect = (action: any) => {
+  const v = action?.value;
+  formData.value.level = v === 'township' ? 'township' : v === 'village' ? 'village' : 'tun';
+  showLevelSheet.value = false;
+};
+
+const submitForm = () => {
+  if (!validateForm()) {
+    return;
+  }
+  
+  uni.showLoading({ title: '发布中...' });
+  
+  // 模拟发布请求
+  setTimeout(() => {
+    uni.hideLoading();
+    uni.showToast({ title: '发布成功', icon: 'success' });
+    setTimeout(() => {
+      uni.navigateBack();
+    }, 1200);
+  }, 1200);
+};
+
+// 页面卸载时清理资源
+onUnmounted(() => {
+  if (innerAudioContext) {
+    innerAudioContext.destroy();
+  }
+  if (recorderManager) {
+    recorderManager.stop();
+  }
+});
 </script>
 
-<style scoped>
-.add-announcement { min-height: 100vh; background-color: #f8fafc; }
-.title-text { font-size:32rpx; font-weight:600; color:#1f2937; }
-.content-scroll { height:100vh; padding-top: calc(88rpx + var(--status-bar-height)); }
-.form-content { padding: 24rpx; }
-.section { margin-bottom: 16rpx; }
-.section-title { font-size: 28rpx; font-weight: 500; color: #374151; margin-bottom: 12rpx; }
-.text-input { width:100%; height:80rpx; border:none; border-radius: 12rpx; padding: 0 20rpx; font-size: 32rpx; color:#2c3e50; background-color:#f8fafc; }
-.text-area { width:100%; min-height: 200rpx; border:none; border-radius: 12rpx; padding: 20rpx; font-size: 32rpx; color:#2c3e50; background-color:#f8fafc; line-height:1.6; }
-.text-input:focus, .text-area:focus { outline:none; }
-.upload-placeholder { width: 200rpx; height: 200rpx; border: none; border-radius: 12rpx; display:flex; flex-direction:column; align-items:center; justify-content:center; background-color:transparent; }
-.char-count { text-align:right; font-size: 24rpx; color:#94a3b8; margin-top: 8rpx; }
-.divider { height: 1rpx; background-color: #e5e7eb; margin: 16rpx 0; }
-.upload-placeholder { width: 200rpx; height: 200rpx; border: 2rpx dashed #cbd5e1; border-radius: 12rpx; display:flex; flex-direction:column; align-items:center; justify-content:center; background-color:#f8fafc; }
-.upload-icon { font-size: 48rpx; color:#94a3b8; margin-bottom: 12rpx; }
-.upload-text { font-size: 24rpx; color:#94a3b8; }
-.row-item { height: 72rpx; display:flex; align-items:center; justify-content:space-between; padding: 0 8rpx; }
-.row-label { font-size: 28rpx; color:#374151; }
-.row-value { display:flex; align-items:center; gap: 8rpx; }
-.value-text { font-size: 28rpx; color:#6b7280; }
-.bottom-actions { padding: 24rpx 0; }
-.voice-popup { background-color:#ffffff; border-top-left-radius: 16rpx; border-top-right-radius: 16rpx; padding: 16rpx; }
-.popup-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 8rpx; }
-.popup-title { font-size: 28rpx; font-weight: 600; color:#1f2937; }
-.record-area { display:flex; flex-direction:column; align-items:center; padding: 24rpx 0; }
-.record-btn { width: 160rpx; height: 160rpx; border-radius: 50%; background-color:#4CAF50; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow: 0 4rpx 20rpx rgba(76,175,80,0.3); transition: all .3s ease; }
-.record-btn.recording { background-color:#F44336; }
-.record-icon { font-size: 48rpx; color:#ffffff; margin-bottom: 8rpx; }
-.record-text { font-size: 24rpx; color:#ffffff; }
-.record-tip { font-size: 24rpx; color:#94a3b8; margin-top: 8rpx; }
-.voice-preview { display:flex; align-items:center; justify-content:space-between; padding: 16rpx; background-color:#E8F5E9; border-radius: 12rpx; }
-.audio-info { display:flex; align-items:center; gap: 12rpx; }
-.audio-icon { font-size: 32rpx; }
-.audio-duration { font-size: 28rpx; color:#4CAF50; font-weight: 600; }
-.audio-controls { display:flex; gap: 16rpx; }
-.control-btn { padding: 12rpx 24rpx; border-radius: 8rpx; font-size: 24rpx; color:#4CAF50; border: 1rpx solid #4CAF50; background-color:#ffffff; }
-.control-btn.delete { color:#F44336; border-color:#F44336; }
+<style scoped lang="scss">
+.add-announcement { 
+  min-height: 100vh; 
+  background-color: var(--theme-bg-color); 
+}
+
+.content-scroll { 
+  height: 100vh; 
+  padding-top: calc(88rpx + var(--status-bar-height)); 
+}
+
+.form-content { 
+  padding: 24rpx; 
+}
+
+.section { 
+  margin-bottom: 16rpx; 
+}
+
+.section-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--theme-main-color);
+  margin-bottom: 12rpx;
+}
+
+.upload-section {
+  .section-label {
+    margin-bottom: 16rpx;
+  }
+}
+
+.text-input, .text-area { 
+  width: 100%; 
+  border: none; 
+  border-radius: 12rpx; 
+  padding: 20rpx; 
+  font-size: 32rpx; 
+  color: var(--theme-main-color); 
+  background-color: #ffffff; 
+  line-height: 1.6;
+  transition: all 0.3s ease;
+  
+  &:focus { 
+    outline: none; 
+    background-color: #ffffff;
+    box-shadow: 0 0 0 2rpx var(--theme-primary);
+  }
+  
+  &.input-error {
+    border: 2rpx solid var(--theme-error);
+    background-color: rgba(239, 68, 68, 0.05);
+  }
+}
+
+.text-input { 
+  height: 80rpx; 
+}
+
+.text-area { 
+  min-height: 200rpx; 
+}
+
+.error-tip {
+  font-size: 24rpx;
+  color: var(--theme-error);
+  margin-top: 8rpx;
+  padding-left: 8rpx;
+}
+
+.char-count { 
+  text-align: right; 
+  font-size: 24rpx; 
+  color: var(--theme-tips-color); 
+  margin-top: 8rpx; 
+}
+
+.divider { 
+  height: 1rpx; 
+  background-color: var(--theme-border-color); 
+  margin: 16rpx 0; 
+}
+
+.row-item { 
+  height: 72rpx; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 0 8rpx;
+  transition: background-color 0.2s ease;
+  
+  &:active {
+    background-color: var(--theme-bg-color-secondary);
+    border-radius: 8rpx;
+  }
+}
+
+.row-label { 
+  font-size: 28rpx; 
+  color: var(--theme-main-color); 
+}
+
+.row-value { 
+  display: flex; 
+  align-items: center; 
+  gap: 8rpx; 
+}
+
+.value-text { 
+  font-size: 28rpx; 
+  color: var(--theme-tips-color);
+  transition: color 0.2s ease;
+  
+  &.value-selected {
+    color: var(--theme-main-color);
+    font-weight: 500;
+  }
+}
+
+.audio-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 4rpx 8rpx;
+  background-color: var(--theme-success-12);
+  border-radius: 12rpx;
+  margin-right: 8rpx;
+}
+
+.audio-duration {
+  font-size: 24rpx;
+  color: var(--theme-success);
+  font-weight: 500;
+}
+
+.voice-popup { 
+  background-color: var(--theme-bg-color); 
+  border-top-left-radius: 16rpx; 
+  border-top-right-radius: 16rpx; 
+  padding: 16rpx; 
+}
+
+.popup-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 8rpx; 
+}
+
+.popup-title { 
+  font-size: 28rpx; 
+  font-weight: 600; 
+  color: var(--theme-main-color); 
+}
+
+.record-area { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  padding: 24rpx 0; 
+}
+
+.record-btn { 
+  width: 160rpx; 
+  height: 160rpx; 
+  border-radius: 50%; 
+  background-color: var(--theme-success); 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  box-shadow: 0 4rpx 20rpx rgba(16, 185, 129, 0.3); 
+  transition: all 0.3s ease;
+  
+  &.recording { 
+    background-color: var(--theme-error);
+    box-shadow: 0 4rpx 20rpx rgba(239, 68, 68, 0.3);
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.record-icon { 
+  font-size: 48rpx; 
+  color: #ffffff; 
+  margin-bottom: 8rpx; 
+}
+
+.record-text { 
+  font-size: 24rpx; 
+  color: #ffffff; 
+}
+
+.record-tip { 
+  font-size: 24rpx; 
+  color: var(--theme-tips-color); 
+  margin-top: 8rpx; 
+}
+
+.voice-preview { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 16rpx; 
+  background-color: var(--theme-success-12); 
+  border-radius: 12rpx; 
+}
+
+.audio-info { 
+  display: flex; 
+  align-items: center; 
+  gap: 12rpx; 
+}
+
+.audio-icon { 
+  font-size: 32rpx; 
+}
+
+.audio-controls { 
+  display: flex; 
+  gap: 16rpx; 
+}
+
+.control-btn { 
+  padding: 12rpx 24rpx; 
+  border-radius: 8rpx; 
+  font-size: 24rpx; 
+  color: var(--theme-success); 
+  border: 1rpx solid var(--theme-success); 
+  background-color: var(--theme-bg-color);
+  transition: all 0.2s ease;
+  
+  &:active {
+    background-color: var(--theme-success);
+    color: #ffffff;
+  }
+  
+  &.delete { 
+    color: var(--theme-error); 
+    border-color: var(--theme-error);
+    
+    &:active {
+      background-color: var(--theme-error);
+      color: #ffffff;
+    }
+  }
+}
 </style>
