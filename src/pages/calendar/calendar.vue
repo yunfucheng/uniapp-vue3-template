@@ -293,13 +293,11 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 32rpx 40rpx;
-  background: rgba(255, 255, 255, 0.8);
+  padding: 24rpx 40rpx;
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
-  margin: 24rpx 32rpx;
-  border-radius: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(148, 163, 184, 0.1);
-  border: 1px solid rgba(226, 232, 240, 0.6);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+  box-shadow: 0 2rpx 8rpx rgba(148, 163, 184, 0.08);
 }
 
 .date-nav-btn {
@@ -337,7 +335,7 @@ onMounted(() => {
 
 /* 滚动内容 */
 .content-scroll {
-  height: calc(100vh - 180px);
+  height: calc(100vh - 160px);
 }
 
 .content-padding {
@@ -475,6 +473,7 @@ onMounted(() => {
 .yi-section, .ji-section {
   padding: 32rpx 24rpx;
   position: relative;
+  min-height: 120rpx;
 }
 
 .yi-section {
@@ -537,7 +536,11 @@ onMounted(() => {
   padding: 20rpx;
   border-radius: 16rpx;
   position: relative;
-  overflow: hidden;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
+  min-height: 60rpx;
+  display: block;
 }
 
 .section-content::before {
