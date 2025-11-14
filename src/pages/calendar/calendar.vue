@@ -55,24 +55,17 @@
           </view>
         </view>
 
-        <!-- 宜忌卡片 -->
-        <view class="yi-ji-card">
-          <view class="yi-section">
-            <view class="section-header">
-              <text class="section-title">宜事</text>
-            </view>
-            <text class="section-content">{{ calendarData.yi || '无特别宜事' }}</text>
-          </view>
-          <view class="ji-section">
-            <view class="section-header">
-              <text class="section-title">忌事</text>
-            </view>
-            <text class="section-content">{{ calendarData.ji || '无特别忌事' }}</text>
-          </view>
-        </view>
-
         <!-- 传统信息卡片 -->
         <view class="traditional-info-cards">
+          <view class="info-card">
+            <text class="info-title">宜事</text>
+            <text class="info-content">{{ calendarData.yi || '无特别宜事' }}</text>
+          </view>
+          <view class="info-card">
+            <text class="info-title">忌事</text>
+            <text class="info-content">{{ calendarData.ji || '无特别忌事' }}</text>
+          </view>
+
           <view class="info-card">
             <text class="info-title">吉神宜趋</text>
             <text class="info-content">{{ calendarData.jiShen || '无' }}</text>
@@ -447,43 +440,6 @@ onMounted(() => {
   font-weight: 500;
   color: #4b5563;
   min-width: 120rpx;
-}
-
-/* 宜忌卡片 - 新风格设计 */
-.yi-ji-card {
-  margin: 0 32rpx 32rpx 32rpx;
-  background: #ffffff;
-  border-radius: 24rpx;
-  overflow: hidden;
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
-  border: 2rpx solid #f1f5f9;
-  position: relative;
-}
-
-.yi-ji-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6rpx;
-  background: linear-gradient(90deg, #10b981 0%, #ef4444 100%);
-}
-
-.yi-section, .ji-section {
-  padding: 32rpx 24rpx;
-  position: relative;
-  min-height: 120rpx;
-}
-
-.yi-section {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.05) 100%);
-  border-left: 6rpx solid #10b981;
-}
-
-.ji-section {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(220, 38, 38, 0.05) 100%);
-  border-left: 6rpx solid #ef4444;
 }
 
 .section-header {
