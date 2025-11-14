@@ -8,25 +8,27 @@
 
     <!-- 日期切换控制 -->
     <view class="date-nav-controls">
-      <up-button 
+      <u-button 
         class="date-nav-btn" 
         @click="previousDay"
         :loading="loading"
+        :disabled="loading"
       >
-        <up-icon name="arrow-left" color="#6b7280" size="18"></up-icon>
-      </up-button>
+        <u-icon name="arrow-left" color="#6b7280" size="18"></u-icon>
+      </u-button>
       
       <view class="date-center" @click="showDatePicker = true">
-        <text class="date-text">{{ formatDisplayDate(currentDate) }}</text>
+        <text class="date-text">{{ displayDate }}</text>
       </view>
       
-      <up-button 
+      <u-button 
         class="date-nav-btn" 
         @click="nextDay"
         :loading="loading"
+        :disabled="loading"
       >
-        <up-icon name="arrow-right" color="#6b7280" size="18"></up-icon>
-      </up-button>
+        <u-icon name="arrow-right" color="#6b7280" size="18"></u-icon>
+      </u-button>
     </view>
 
     <!-- 主要内容区域 -->
@@ -36,8 +38,8 @@
         <view class="date-info-card">
           <view class="date-info-content">
             <view class="date-display">
-              <text class="date-number">{{ new Date(currentDate).getDate() }}</text>
-              <text class="date-month">{{ new Date(currentDate).getMonth() + 1 }}月</text>
+              <text class="date-number">{{ dayNumber }}</text>
+              <text class="date-month">{{ monthNumber }}月</text>
             </view>
             <view class="date-details">
               <text class="lunar-info">{{ calendarData.yinLi }}</text>
@@ -59,31 +61,59 @@
         <view class="traditional-info-cards">
           <view class="info-card">
             <text class="info-title">宜事</text>
-            <text class="info-content">{{ calendarData.yi || '无特别宜事' }}</text>
+            <view class="info-tags">
+              <template v-if="yiTags.length">
+                <u-tag v-for="(t, i) in yiTags" :key="'yi-'+i" :text="t" type="success" plain size="mini" class="tag-item" />
+              </template>
+              <text class="info-content" v-else>无特别宜事</text>
+            </view>
           </view>
           <view class="info-card">
             <text class="info-title">忌事</text>
-            <text class="info-content">{{ calendarData.ji || '无特别忌事' }}</text>
+            <view class="info-tags">
+              <template v-if="jiTags.length">
+                <u-tag v-for="(t, i) in jiTags" :key="'ji-'+i" :text="t" type="error" plain size="mini" class="tag-item" />
+              </template>
+              <text class="info-content" v-else>无特别忌事</text>
+            </view>
           </view>
 
           <view class="info-card">
             <text class="info-title">吉神宜趋</text>
-            <text class="info-content">{{ calendarData.jiShen || '无' }}</text>
+            <view class="info-tags">
+              <template v-if="jiShenTags.length">
+                <u-tag v-for="(t, i) in jiShenTags" :key="'jishen-'+i" :text="t" type="primary" plain size="mini" class="tag-item" />
+              </template>
+              <text class="info-content" v-else>无</text>
+            </view>
           </view>
           
           <view class="info-card">
             <text class="info-title">凶神宜忌</text>
-            <text class="info-content">{{ calendarData.xiongShen || '无' }}</text>
+            <view class="info-tags">
+              <template v-if="xiongShenTags.length">
+                <u-tag v-for="(t, i) in xiongShenTags" :key="'xiongshen-'+i" :text="t" type="warning" plain size="mini" class="tag-item" />
+              </template>
+              <text class="info-content" v-else>无</text>
+            </view>
           </view>
           
           <view class="info-card">
             <text class="info-title">彭祖百忌</text>
-            <text class="info-content">{{ calendarData.baiJi || '无' }}</text>
+            <view class="info-tags">
+              <template v-if="baiJiTags.length">
+                <u-tag v-for="(t, i) in baiJiTags" :key="'baiji-'+i" :text="t" plain size="mini" class="tag-item" />
+              </template>
+              <text class="info-content" v-else>无</text>
+            </view>
           </view>
         </view>
       </view>
 
       <!-- 加载状态 -->
+      <view v-if="loading" class="skeleton-wrapper">
+        <u-skeleton :loading="loading" rows="4" title animated />
+      </view>
       <view v-if="loading" class="loading-container">
         <u-loading-icon mode="spinner" color="#daa520" size="40"></u-loading-icon>
         <text class="loading-text">加载中...</text>
@@ -92,7 +122,7 @@
       <!-- 错误状态 -->
       <view v-if="error && !loading" class="error-container">
         <text class="error-text">{{ error }}</text>
-        <up-button class="retry-btn" @click="loadCalendarData">重试</up-button>
+        <u-button class="retry-btn" @click="loadCalendarData">重试</u-button>
       </view>
     </scroll-view>
 
@@ -130,7 +160,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { getCalendarByDate } from '@/api/calendar';
 import type { CalendarData } from '@/api/calendar/types';
 
@@ -145,13 +175,13 @@ const years = ref<number[]>([]);
 const months = ref<number[]>([]);
 const days = ref<number[]>([]);
 
-// 格式化显示日期
-const formatDisplayDate = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
+const displayDate = computed(() => {
+  const d = currentDate.value;
+  const year = d.getFullYear();
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.getDate().toString().padStart(2, '0');
   return `${year}-${month}-${day}`;
-};
+});
 
 // 格式化API请求日期
 const formatApiDate = (date: Date): string => {
@@ -160,6 +190,23 @@ const formatApiDate = (date: Date): string => {
   const day = date.getDate().toString().padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
+
+const dayNumber = computed(() => currentDate.value.getDate());
+const monthNumber = computed(() => currentDate.value.getMonth() + 1);
+
+const splitText = (text?: string | null): string[] => {
+  if (!text) return [];
+  return text
+    .split(/[\s,，、；;]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+};
+
+const yiTags = computed(() => splitText(calendarData.value?.yi));
+const jiTags = computed(() => splitText(calendarData.value?.ji));
+const jiShenTags = computed(() => splitText(calendarData.value?.jiShen));
+const xiongShenTags = computed(() => splitText(calendarData.value?.xiongShen));
+const baiJiTags = computed(() => splitText(calendarData.value?.baiJi));
 
 // 加载日历数据
 const loadCalendarData = async () => {
@@ -174,10 +221,12 @@ const loadCalendarData = async () => {
       calendarData.value = response.result;
     } else {
       error.value = response.message || '获取数据失败';
+      uni.showToast({ title: error.value, icon: 'none' });
     }
   } catch (err: any) {
     console.error('获取日历数据失败:', err);
     error.value = '网络错误，请检查网络连接';
+    uni.showToast({ title: error.value, icon: 'none' });
   } finally {
     loading.value = false;
   }
@@ -225,7 +274,6 @@ const initDatePicker = () => {
   ];
 };
 
-// 更新日期数组
 const updateDays = () => {
   const year = years.value[pickerValue.value[0]] || new Date().getFullYear();
   const month = pickerValue.value[1] + 1;
@@ -234,6 +282,9 @@ const updateDays = () => {
   days.value = [];
   for (let i = 1; i <= daysInMonth; i++) {
     days.value.push(i);
+  }
+  if (pickerValue.value[2] > days.value.length - 1) {
+    pickerValue.value[2] = days.value.length - 1;
   }
 };
 
@@ -254,9 +305,15 @@ const confirmDateChange = () => {
   showDatePicker.value = false;
 };
 
-// 监听日期变化，重新加载数据
+let loadTimer: ReturnType<typeof setTimeout> | null = null;
 watch(currentDate, () => {
-  loadCalendarData();
+  if (loadTimer) {
+    clearTimeout(loadTimer);
+  }
+  loadTimer = setTimeout(() => {
+    loadCalendarData();
+    loadTimer = null;
+  }, 200);
 }, { immediate: false });
 
 onMounted(() => {
@@ -322,7 +379,7 @@ onMounted(() => {
 .date-text {
   font-size: 40rpx;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--theme-main-color);
   letter-spacing: 1rpx;
 }
 
@@ -569,7 +626,7 @@ onMounted(() => {
 .info-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--theme-main-color);
   letter-spacing: 1rpx;
   margin-bottom: 20rpx;
   display: block;
@@ -577,10 +634,24 @@ onMounted(() => {
 
 .info-content {
   font-size: 30rpx;
-  color: #475569;
+  color: var(--theme-content-color);
   line-height: 1.6;
   letter-spacing: 0.5rpx;
   display: block;
+}
+
+.info-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.tag-item {
+  margin: 4rpx 0;
+}
+
+.skeleton-wrapper {
+  padding: 32rpx;
 }
 
 /* 加载和错误状态 */
