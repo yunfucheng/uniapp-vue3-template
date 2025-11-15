@@ -17,7 +17,7 @@
         <u-icon name="arrow-left" color="#6b7280" size="18"></u-icon>
       </u-button>
       
-      <view class="date-center" @click="showDatePicker = true">
+      <view class="date-center">
         <text class="date-text">{{ displayDate }}</text>
       </view>
       
@@ -126,36 +126,7 @@
       </view>
     </scroll-view>
 
-    <!-- 日期选择器 -->
-    <view v-if="showDatePicker" class="date-picker-overlay" @click="showDatePicker = false">
-      <view class="date-picker-container" @click.stop>
-        <view class="picker-header">
-          <text class="picker-title">选择日期</text>
-          <button class="picker-close" @click="showDatePicker = false">×</button>
-        </view>
-        <picker-view class="picker-view" :value="pickerValue" @change="onPickerChange">
-          <picker-view-column>
-            <view v-for="(year, index) in years" :key="index" class="picker-item">
-              {{ year }}年
-            </view>
-          </picker-view-column>
-          <picker-view-column>
-            <view v-for="(month, index) in months" :key="index" class="picker-item">
-              {{ month }}月
-            </view>
-          </picker-view-column>
-          <picker-view-column>
-            <view v-for="(day, index) in days" :key="index" class="picker-item">
-              {{ day }}日
-            </view>
-          </picker-view-column>
-        </picker-view>
-        <view class="picker-actions">
-          <button class="picker-btn cancel-btn" @click="showDatePicker = false">取消</button>
-          <button class="picker-btn confirm-btn" @click="confirmDateChange">确认</button>
-        </view>
-      </view>
-    </view>
+    
   </view>
 </template>
 
@@ -167,13 +138,8 @@ import type { CalendarData } from '@/api/calendar/types';
 // 响应式数据
 const loading = ref(false);
 const error = ref('');
-const showDatePicker = ref(false);
 const currentDate = ref(new Date());
 const calendarData = ref<CalendarData | null>(null);
-const pickerValue = ref([0, 0, 0]);
-const years = ref<number[]>([]);
-const months = ref<number[]>([]);
-const days = ref<number[]>([]);
 
 const displayDate = computed(() => {
   const d = currentDate.value;
@@ -246,64 +212,7 @@ const nextDay = () => {
   currentDate.value = newDate;
 };
 
-// 初始化日期选择器
-const initDatePicker = () => {
-  const currentYear = new Date().getFullYear();
-  
-  // 生成年份数组 (当前年份前后5年)
-  years.value = [];
-  for (let i = currentYear - 5; i <= currentYear + 5; i++) {
-    years.value.push(i);
-  }
-
-  // 生成月份数组
-  months.value = [];
-  for (let i = 1; i <= 12; i++) {
-    months.value.push(i);
-  }
-
-  // 生成日期数组
-  updateDays();
-
-  // 设置当前选中的日期
-  const date = currentDate.value;
-  pickerValue.value = [
-    years.value.indexOf(date.getFullYear()),
-    date.getMonth(),
-    date.getDate() - 1,
-  ];
-};
-
-const updateDays = () => {
-  const year = years.value[pickerValue.value[0]] || new Date().getFullYear();
-  const month = pickerValue.value[1] + 1;
-  const daysInMonth = new Date(year, month, 0).getDate();
-
-  days.value = [];
-  for (let i = 1; i <= daysInMonth; i++) {
-    days.value.push(i);
-  }
-  if (pickerValue.value[2] > days.value.length - 1) {
-    pickerValue.value[2] = days.value.length - 1;
-  }
-};
-
-// 日期选择器变化
-const onPickerChange = (e: any) => {
-  pickerValue.value = e.detail.value;
-  updateDays();
-};
-
-// 确认日期变更
-const confirmDateChange = () => {
-  const year = years.value[pickerValue.value[0]];
-  const month = pickerValue.value[1] + 1;
-  const day = days.value[pickerValue.value[2]];
-
-  const newDate = new Date(year, month - 1, day);
-  currentDate.value = newDate;
-  showDatePicker.value = false;
-};
+ 
 
 let loadTimer: ReturnType<typeof setTimeout> | null = null;
 watch(currentDate, () => {
@@ -317,7 +226,6 @@ watch(currentDate, () => {
 }, { immediate: false });
 
 onMounted(() => {
-  initDatePicker();
   loadCalendarData();
 });
 </script>
@@ -476,7 +384,7 @@ onMounted(() => {
 .additional-info {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 2rpx;
 }
 
 .info-item {
@@ -485,7 +393,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 20rpx;
-  padding: 12rpx 0;
+  padding: 0rpx 0;
   border-bottom: 1px solid rgba(226, 232, 240, 0.3);
 
   &:last-child {
@@ -687,94 +595,7 @@ onMounted(() => {
 }
 
 /* 日期选择器样式 */
-.date-picker-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.date-picker-container {
-  background: white;
-  border-radius: 32rpx;
-  width: 90%;
-  max-width: 600rpx;
-  max-height: 80vh;
-  overflow: hidden;
-  box-shadow: 0 32rpx 96rpx rgba(0, 0, 0, 0.3);
-}
-
-.picker-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 32rpx 40rpx;
-  background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
-}
-
-.picker-title {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: white;
-}
-
-.picker-close {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 32rpx;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  font-size: 36rpx;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.picker-view {
-  height: 400rpx;
-}
-
-.picker-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 80rpx;
-  font-size: 32rpx;
-  color: #333;
-}
-
-.picker-actions {
-  display: flex;
-  padding: 32rpx 40rpx;
-  gap: 24rpx;
-  background: #f8f8f8;
-}
-
-.picker-btn {
-  flex: 1;
-  height: 80rpx;
-  border-radius: 16rpx;
-  border: none;
-  font-size: 28rpx;
-  font-weight: 600;
-}
-
-.cancel-btn {
-  background: #f0f0f0;
-  color: #666;
-}
-
-.confirm-btn {
-  background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
-  color: white;
-}
+ 
 
 /* 响应式设计 */
 @media screen and (max-width: 750rpx) {
