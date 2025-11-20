@@ -1,6 +1,6 @@
 <template>
   <view>
-      <u-navbar :auto-back="true" title="相片" placeholder>
+      <u-navbar :auto-back="true" title="家乡照片墙" placeholder>
         <template #right>
           <view @tap="goToAddPhoto">
             <u-icon name="plus" size="20" color="#09BE4F" />
@@ -9,11 +9,6 @@
       </u-navbar>
     </view>
   <view class="photowall-container">
-    <view class="header">
-      <text class="title">家乡照片墙</text>
-      <text class="subtitle">记录家乡面貌</text>
-    </view>
-
     <LsjAlbum
       background="#fff"
       round="16rpx"
